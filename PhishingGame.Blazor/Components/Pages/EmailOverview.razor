@@ -1,0 +1,57 @@
+﻿@page "/emailoverview";
+
+@inject PhishingGame.Data.PhishingDbContext<BaseModel> Db;
+@inject DialogService DialogService
+
+@using Microsoft.EntityFrameworkCore
+@using PhishinGame.Core.Models
+@using Radzen;
+@using Radzen.Blazor
+
+
+<h3>E-mails beheren</h3>
+<p>Dit is de E-mail page.</p>
+<RadzenButton Text="Nieuwe e-mail" Click="AddEmail" Style="margin-bottom: 10px"></RadzenButton>
+    <RadzenDataGrid TItem="Email" Data="@emails" RowSelect="OnRowSelect" AllowPaging="true" AllowSorting="true" PageSize="10" >
+        <Columns>
+            <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+            <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+            <RadzenDataGridColumn TItem="Email" Property="Message" Title="Bericht" />
+            <RadzenDataGridColumn TItem="Email" Property="IsPhishing" Title="Phishing?" />
+            <RadzenDataGridColumn TItem="Email" Context="email" />
+        <RadzenDataGridColumn TItem="Email" Title="Acties">
+            <Template Context="email">
+                <RadzenButton Icon="delete"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Size="ButtonSize.Small"
+                              Click="@(args => Delete(email))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+    </RadzenDataGrid>
+
+@code {
+    private List<Email> emails = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        emails = await Db.Set<Email>().ToListAsync();
+    }
+
+
+    async Task Delete(Email email)
+    {
+        var confirm = await DialogService.Confirm("Weet u zeker dat u deze e-mail wilt verwijderen?", "Bevestigen.");
+        if(confirm == true)
+        {
+            Db.Set<Email>().Remove(email);
+            await Db.SaveChangesAsync();
+            emails = await Db.Set<Email>().ToListAsync();
+        }
+
+    }
+
+    void OnRowSelect(Email email) => NavigationManager.NavigateTo($"/emails/email.Id");
+    void AddEmail() => NavigationManager.NavigateTo("/addemail");
+    [Inject] NavigationManager NavigationManager { get; set; } = default!;
+}

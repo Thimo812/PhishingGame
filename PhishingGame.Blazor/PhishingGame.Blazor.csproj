@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Radzen.Blazor" Version="8.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PhishinGame.Core\PhishinGame.Core.csproj" />
     <ProjectReference Include="..\PhishingGame.Data\PhishingGame.Data.csproj" />
   </ItemGroup>

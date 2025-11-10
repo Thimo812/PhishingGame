@@ -1,11 +1,20 @@
+using Radzen;
 using PhishingGame.Blazor.Components;
+using Microsoft.EntityFrameworkCore;
+using PhishinGame.Core.Models;
+using PhishingGame.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<PhishingDbContext<BaseModel>>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
+builder.Services.AddScoped<DialogService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
