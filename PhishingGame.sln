@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhishingGame.Blazor", "PhishingGame.Blazor\PhishingGame.Blazor.csproj", "{387A2AA2-8A65-463E-9C9E-8666A2740037}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhishinGame.Core", "PhishinGame.Core\PhishinGame.Core.csproj", "{830BD432-9B3E-4AD7-92F0-5A6CD8C7D35E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhishingGame.Core", "PhishinGame.Core\PhishingGame.Core.csproj", "{830BD432-9B3E-4AD7-92F0-5A6CD8C7D35E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhishingGame.Data", "PhishingGame.Data\PhishingGame.Data.csproj", "{B137BBD5-BECC-4EC1-95B4-7FFD115AFB83}"
 EndProject

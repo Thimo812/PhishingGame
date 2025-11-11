@@ -42,6 +42,6 @@ public class PhishingDbContext<TBaseModel>(DbContextOptions<PhishingDbContext<TB
             .GetTypes()
             .Where(
                 type => 
-                type.IsAssignableTo(typeof(TBaseModel)));
+                type.IsAssignableTo(typeof(TBaseModel)) && type != typeof(TBaseModel));
     }
 }

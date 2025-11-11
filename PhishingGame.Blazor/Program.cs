@@ -1,9 +1,12 @@
 using PhishingGame.Blazor.Components;
+using PhishingGame.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorComponents()
+builder.Services
+    .AddSessions(states => { })
+    .AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
