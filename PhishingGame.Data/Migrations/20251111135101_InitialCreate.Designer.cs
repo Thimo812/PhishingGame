@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhishingGame.Data;
 
@@ -11,9 +12,11 @@ using PhishingGame.Data;
 namespace PhishingGame.Data.Migrations
 {
     [DbContext(typeof(PhishingDbContext))]
-    partial class PhishingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251111135101_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -243,7 +246,7 @@ namespace PhishingGame.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Emails", (string)null);
+                    b.ToTable("Emails");
                 });
 
             modelBuilder.Entity("PhishinGame.Core.Models.Training", b =>
@@ -258,7 +261,7 @@ namespace PhishingGame.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Trainings", (string)null);
+                    b.ToTable("Trainings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

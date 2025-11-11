@@ -5,16 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PhishinGame.Core.Models;
 using PhishingGame.Data;
 
 #nullable disable
 
 namespace PhishingGame.Data.Migrations
 {
-    [DbContext(typeof(PhishingDbContext<BaseModel>))]
-    [Migration("20251111110054_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(PhishingDbContext))]
+    [Migration("20251111140029_SplitTables")]
+    partial class SplitTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,29 +223,11 @@ namespace PhishingGame.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PhishinGame.Core.Models.BaseModel", b =>
+            modelBuilder.Entity("PhishinGame.Core.Models.Email", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("BaseModel");
-
-                    b.HasDiscriminator().HasValue("BaseModel");
-
-                    b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("PhishinGame.Core.Models.Email", b =>
-                {
-                    b.HasBaseType("PhishinGame.Core.Models.BaseModel");
 
                     b.Property<bool>("IsPhishing")
                         .HasColumnType("bit");
@@ -263,18 +244,24 @@ namespace PhishingGame.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("Email");
+                    b.HasKey("Id");
+
+                    b.ToTable("Emails", (string)null);
                 });
 
             modelBuilder.Entity("PhishinGame.Core.Models.Training", b =>
                 {
-                    b.HasBaseType("PhishinGame.Core.Models.BaseModel");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasDiscriminator().HasValue("Training");
+                    b.HasKey("Id");
+
+                    b.ToTable("Trainings", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
