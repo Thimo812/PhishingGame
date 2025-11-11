@@ -20,6 +20,8 @@ public class PhishingDbContext<TBaseModel>(DbContextOptions<PhishingDbContext<TB
     {
         base.OnModelCreating(builder);
 
+
+
         AddModels(builder);
     }
 
