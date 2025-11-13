@@ -3,7 +3,7 @@ using PhishingGame.Blazor.Components;
 using PhishingGame.Blazor.Components.States;
 using PhishingGame.Core;
 using Microsoft.EntityFrameworkCore;
-using PhishinGame.Core.Models;
+using PhishingGame.Core.Models;
 using PhishingGame.Data;
 
 
