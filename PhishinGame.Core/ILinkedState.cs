@@ -3,7 +3,8 @@
 public interface ILinkedState
 {
     ILinkedState NextState { get; set; }
-    IGameView PlayerView { get; }
-    IGameView HostView { get; }
+    Type PlayerViewType { get; }
+    Type HostViewType { get; }
+    IDictionary<string, object?> Parameters { get; }
     void InitializeState(SessionData sessionData);
 }

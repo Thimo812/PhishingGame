@@ -1,0 +1,26 @@
+﻿@using PhishingGame.Blazor.Components.Pages
+@page "/session/{SessionId:guid}"
+@page "/session"
+
+@if (CurrentState == null)
+{
+    <SessionNotFound />
+}
+
+else if (!Session!.ContainsPlayer(UserId))
+{
+    if (Session.CanJoin)
+    {
+        <RegisterView OnSubmit="@RegisterPlayer" />
+    }
+    else
+    {
+        <SessionClosed />
+    }
+}
+
+else 
+{
+    <DynamicComponent Type="@CurrentState.PlayerViewType" Parameters="@CurrentState.Parameters" />
+}
+

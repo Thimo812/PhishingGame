@@ -1,6 +1,7 @@
-﻿namespace PhishingGame.Core;
+﻿using System.ComponentModel;
+
+namespace PhishingGame.Core;
 
 public interface IGameView
 {
-    SessionData SessionData { get; set; }
 }

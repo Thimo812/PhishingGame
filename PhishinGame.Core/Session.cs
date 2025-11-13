@@ -9,18 +9,18 @@ public class Session(ILinkedState state, Training training)
     private const int _maxPlayersPerTeam = 5;
     private const int _preferredTeamAmount = 3;
 
-    private ILinkedState _currentState = state;
     private SessionData _sessionData = new() { Training = training };
 
     public event SessionUpdated SessionEnded;
     public event SessionUpdated SessionStarted;
     public event SessionUpdated StateUpdated;
 
+    public ILinkedState CurrentState { get; set; } = state;
     public Guid SessionId { get; set; } = Guid.NewGuid();
     public Guid HostId { get; set; }
     public bool CanJoin { get; set; } = true;
 
-    public async Task AddPlayerAsync(Guid id, string name)
+    public void AddPlayer(Guid id, string name)
     {
         _sessionData.Players.Add(new Player(id, name));
     }
@@ -29,22 +29,22 @@ public class Session(ILinkedState state, Training training)
     {
         CanJoin = false;
         CreateTeams();
-        _currentState.InitializeState(_sessionData);
+        CurrentState.InitializeState(_sessionData);
 
         SessionStarted?.Invoke(this);
     }
 
     public async Task ContinueAsync()
     {
-        _currentState = _currentState.NextState;
-        _currentState.InitializeState(_sessionData);
+        CurrentState = CurrentState.NextState;
+        CurrentState.InitializeState(_sessionData);
 
         StateUpdated?.Invoke(this);
     }
 
     public async Task StopAsync()
     {
-        _currentState = null;
+        CurrentState = null;
         SessionEnded?.Invoke(this);
     }
 
