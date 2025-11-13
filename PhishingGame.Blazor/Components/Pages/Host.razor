@@ -1,0 +1,20 @@
+﻿@using Radzen.Blazor
+@using Core
+@using Core.Models
+
+@inject ISessionManager _sessionManager
+@page "/"
+
+<RadzenButton Click="@OnClick">Start sessie</RadzenButton>
+
+<p>@Session?.SessionId</p>
+
+@code {
+    public Session? Session { get; set; }
+
+    public async Task OnClick()
+    {
+        Session = _sessionManager.CreateSession(new());
+        await Task.CompletedTask;
+    }
+}

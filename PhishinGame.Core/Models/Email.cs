@@ -1,4 +1,4 @@
-﻿namespace PhishinGame.Core.Models;
+﻿namespace PhishingGame.Core.Models;
 
 public class Email : BaseModel
 {
