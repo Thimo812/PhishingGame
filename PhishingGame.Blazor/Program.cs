@@ -1,7 +1,12 @@
+using Radzen;
 using Microsoft.EntityFrameworkCore;
 using PhishingGame.Blazor.Components;
+using Microsoft.EntityFrameworkCore;
+using PhishinGame.Core.Models;
+using PhishingGame.Data;
 using PhishingGame.Core;
 using PhishingGame.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,8 @@ builder.Services
     .AddHttpContextAccessor()
     .AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddScoped<DialogService>();
+builder.Services.AddScoped<NotificationService>();
 
 var app = builder.Build();
 

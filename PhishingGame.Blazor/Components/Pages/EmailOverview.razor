@@ -1,0 +1,98 @@
+﻿@page "/emailoverview"
+
+@using Microsoft.EntityFrameworkCore
+@using PhishinGame.Core.Models
+@using PhishingGame.Blazor.Components.Dialogs
+@using Radzen
+@using Radzen.Blazor
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject DialogService DialogService
+@inject NavigationManager NavigationManager
+
+<h3 class="text-xl font-bold mb-3">E-mails beheren</h3>
+
+<RadzenButton Text="Nieuwe e-mail" Icon="add_circle" Click="AddEmail" Style="margin-bottom: 10px;" />
+
+<RadzenDataGrid TItem="Email"
+                Data="@emails"
+                RowSelect="OnRowSelect"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowPaging="true"
+                AllowSorting="true"
+                PageSize="8"
+                Class="rz-hoverable"
+                Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+    <Columns>
+        <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+        <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+        <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+            <Template Context="email">
+                @if (email.IsPhishing)
+                {
+                    <RadzenIcon Icon="flag" Style="color:red;" />
+                }
+                else
+                {
+                    <RadzenIcon Icon="flag" Style="color:green;" />
+                }
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="Email" Title="Bekijk">
+            <Template Context="email">
+                <RadzenButton Text="👁️"
+                              ButtonStyle="ButtonStyle.Light"
+                              Click="@(args => OnRowSelect(email))" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="Email" Title="Acties">
+            <Template Context="email">
+                <RadzenButton Icon="delete"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Size="ButtonSize.Small"
+                              Click="@(args => Delete(email))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private List<Email> emails = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        emails = await Db.Emails.ToListAsync();
+
+        // await DialogService.Alert("Test popup werkt!"); //test
+    }
+
+
+    async void OnRowSelect(Email email)
+    {
+        Console.WriteLine($"✅ Eye button clicked: {email.Subject}");
+
+        await DialogService.OpenAsync<EmailDetailsDialog>(
+            "E-mail details",
+            new Dictionary<string, object>() { { "Email", email } },
+            new DialogOptions() { Width = "600px", Height = "auto", CloseDialogOnOverlayClick = true }
+        );
+
+        Console.WriteLine("🟢 DialogService.OpenAsync executed"); //test
+    }
+
+
+    async Task Delete(Email email)
+    {
+        var confirm = await DialogService.Confirm("Weet u zeker dat u deze e-mail wilt verwijderen?", "Bevestigen.");
+        if (confirm == true)
+        {
+            Db.Emails.Remove(email);
+            await Db.SaveChangesAsync();
+            emails = await Db.Emails.ToListAsync();
+        }
+    }
+
+    void AddEmail() => NavigationManager.NavigateTo("/addemail");
+}
