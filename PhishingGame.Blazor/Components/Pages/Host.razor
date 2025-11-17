@@ -15,6 +15,7 @@
     public async Task OnClick()
     {
         Session = _sessionManager.CreateSession(new());
+        Session.Initialize();
         await Task.CompletedTask;
     }
 }

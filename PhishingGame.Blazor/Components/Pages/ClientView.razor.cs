@@ -18,6 +18,7 @@ public partial class ClientView
     public Session? Session { get; set; }
     public ILinkedState? CurrentState => Session?.CurrentState;
     public Guid UserId {  get; set; }
+    public bool ContainsPlayer { get; set; }
 
     private void RegisterPlayer(string name)
     {
@@ -31,5 +32,6 @@ public partial class ClientView
     {
         Session = _sessionManager.GetSession(SessionId);
         UserId = _userService.GetUserId();
+        ContainsPlayer = Session?.ContainsPlayer(UserId) ?? false;
     }
 }

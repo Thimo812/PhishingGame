@@ -17,4 +17,9 @@
     <ProjectReference Include="..\PhishingGame.Data\PhishingGame.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Pages\StateViews\" />
+    <Folder Include="Components\States\" />
+  </ItemGroup>
+
 </Project>

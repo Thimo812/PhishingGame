@@ -25,19 +25,23 @@ public class Session(ILinkedState state, Training training)
         _sessionData.Players.Add(new Player(id, name));
     }
 
+    public void Initialize()
+    {
+        CurrentState.InitializeState(this);
+    }
+
     public async Task StartAsync()
     {
         CanJoin = false;
         CreateTeams();
-        CurrentState.InitializeState(_sessionData);
 
         SessionStarted?.Invoke(this);
     }
 
-    public async Task ContinueAsync()
+    public async Task NextStateAsync()
     {
         CurrentState = CurrentState.NextState;
-        CurrentState.InitializeState(_sessionData);
+        CurrentState.InitializeState(this);
 
         StateUpdated?.Invoke(this);
     }

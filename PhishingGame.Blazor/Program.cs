@@ -1,12 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using PhishingGame.Blazor.Components;
-using PhishingGame.Blazor.Components.States;
 using PhishingGame.Core;
+using PhishingGame.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddSessions(states => states.WithState<StartState>())
+    .AddSessions(states => { })
+    .AddDbContext<PhishingDbContext>(options =>
+        options.UseSqlServer("DefaultConnection"))
     .AddHttpContextAccessor()
     .AddRazorComponents()
     .AddInteractiveServerComponents();

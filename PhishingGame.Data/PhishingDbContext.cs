@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PhishingGame.Core.Models;
 using System.Reflection;
 
 namespace PhishingGame.Data;
@@ -13,34 +14,8 @@ namespace PhishingGame.Data;
 /// <param name="options">
 /// Configuration options for the database context.
 /// </param>
-public class PhishingDbContext<TBaseModel>(DbContextOptions<PhishingDbContext<TBaseModel>> options) : IdentityDbContext(options)
+public class PhishingDbContext(DbContextOptions<PhishingDbContext> options) : IdentityDbContext(options)
 {
-    protected override void OnModelCreating(ModelBuilder builder)
-    {
-        base.OnModelCreating(builder);
-
-        AddModels(builder);
-    }
-
-    private void AddModels(ModelBuilder builder)
-    {
-        var assembly = Assembly.GetAssembly(typeof(TBaseModel))
-            ?? throw new NullReferenceException("Assembly containing database models could not be found");
-
-        var types = GetModelTypes(assembly);
-
-        foreach (var type in types)
-        {
-            builder.Entity(type);
-        }
-    }
-
-    private IEnumerable<Type> GetModelTypes(Assembly assembly)
-    {
-        return assembly
-            .GetTypes()
-            .Where(
-                type => 
-                type.IsAssignableTo(typeof(TBaseModel)) && type != typeof(TBaseModel));
-    }
+    public DbSet<Email> Emails { get; set; }
+    public DbSet<Training> Trainings { get; set; }
 }
