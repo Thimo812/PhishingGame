@@ -1,0 +1,13 @@
+﻿@using PhishingGame.Blazor.States
+@using Radzen.Blazor
+@using PhishingGame.Core
+@inherits GameViewBase<TeamLayoutState>
+
+<RadzenDataList TItem="Team" Data="Session.SessionData.Teams" PageSize="5" WrapItems="true">
+    <Template Context="team">
+        <RadzenCard>
+            <RadzenText>@team.Name</RadzenText>
+            <RadzenDataList TItem="Player" Data="@team.Players"/>
+        </RadzenCard>
+    </Template>
+</RadzenDataList>

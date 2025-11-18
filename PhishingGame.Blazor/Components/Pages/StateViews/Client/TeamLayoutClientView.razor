@@ -1,0 +1,20 @@
+﻿@using PhishingGame.Blazor.States
+@using Radzen.Blazor
+@using PhishingGame.Core
+@inherits GameViewBase<TeamLayoutState>
+
+<RadzenText>@Team.Name</RadzenText>
+<RadzenDataList TItem="Player" Data="@Team.Players" />
+
+
+@code {
+    Team Team { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        var userId = UserService.GetUserId();
+        Team = State.GetTeam(userId);
+    }
+}
+
+

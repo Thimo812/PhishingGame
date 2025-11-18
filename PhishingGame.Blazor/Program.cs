@@ -1,20 +1,20 @@
 using Radzen;
 using Microsoft.EntityFrameworkCore;
 using PhishingGame.Blazor.Components;
-using Microsoft.EntityFrameworkCore;
-using PhishinGame.Core.Models;
 using PhishingGame.Data;
 using PhishingGame.Core;
-using PhishingGame.Data;
+using PhishingGame.Blazor.States;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddSessions(states => { })
+    .AddSessions(states => states
+        .WithState<StartMenuState>()
+        .WithState<TeamLayoutState>())
     .AddDbContext<PhishingDbContext>(options =>
-        options.UseSqlServer("DefaultConnection"))
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
     .AddHttpContextAccessor()
     .AddRazorComponents()
     .AddInteractiveServerComponents();

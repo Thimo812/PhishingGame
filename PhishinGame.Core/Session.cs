@@ -9,7 +9,7 @@ public class Session(ILinkedState state, Training training)
     private const int _maxPlayersPerTeam = 5;
     private const int _preferredTeamAmount = 3;
 
-    private SessionData _sessionData = new() { Training = training };
+    public SessionData SessionData { get; set; } = new() { Training = training };
 
     public event SessionUpdated SessionEnded;
     public event SessionUpdated SessionStarted;
@@ -22,7 +22,7 @@ public class Session(ILinkedState state, Training training)
 
     public void AddPlayer(Guid id, string name)
     {
-        _sessionData.Players.Add(new Player(id, name));
+        SessionData.Players.Add(new Player(id, name));
     }
 
     public void Initialize()
@@ -46,10 +46,16 @@ public class Session(ILinkedState state, Training training)
         StateUpdated?.Invoke(this);
     }
 
-    public async Task StopAsync()
+    public void Stop()
     {
         CurrentState = null;
         SessionEnded?.Invoke(this);
+    }
+
+    public bool TryGetPlayer(Guid playerId, out Player player)
+    {
+        player = SessionData.Players.FirstOrDefault(player => player.Id == playerId);
+        return player != null;
     }
 
     public bool ContainsPlayer(Player player)
@@ -59,28 +65,28 @@ public class Session(ILinkedState state, Training training)
 
     public bool ContainsPlayer(Guid playerId)
     {
-        return _sessionData.Players.Any(player => player.Id == playerId);
+        return SessionData.Players.Any(player => player.Id == playerId);
     }
 
     private void CreateTeams()
     {
-        int playerCount = _sessionData.Players.Count;
+        int playerCount = SessionData.Players.Count;
         int teamAmount = GetPreferredTeamAmount(playerCount);
 
         for (int i = 0; i < teamAmount; i++)
         {
-            _sessionData.Teams.Add(new Team { Name = $"Team {i}" });
+            SessionData.Teams.Add(new Team { Name = $"Team {i}" });
         }
 
         int currentIndex = 0;
 
         while (currentIndex < playerCount)
         {
-            foreach (var team in _sessionData.Teams)
+            foreach (var team in SessionData.Teams)
             {
                 if (currentIndex >= playerCount) break;
 
-                team.Players.Add(_sessionData.Players[currentIndex]);
+                team.Players.Add(SessionData.Players[currentIndex]);
                 currentIndex++;
             }
         }

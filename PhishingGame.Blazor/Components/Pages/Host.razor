@@ -12,10 +12,10 @@
 @code {
     public Session? Session { get; set; }
 
-    public async Task OnClick()
+    public void OnClick()
     {
-        Session = _sessionManager.CreateSession(new());
-        Session.Initialize();
-        await Task.CompletedTask;
+        var session = _sessionManager.CreateSession(new());
+        session.Initialize();
+        Session = session;
     }
 }

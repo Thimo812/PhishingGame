@@ -1,0 +1,16 @@
+﻿@using Radzen.Blazor;
+@using PhishingGame.Blazor.States;
+@using PhishingGame.Core;
+@inherits GameViewBase<StartMenuState>
+@inject NavigationManager Navigator
+
+<RadzenColumn>
+    <RadzenDataList TItem="Player" Data="@Session.SessionData.Players" />
+</RadzenColumn>
+<RadzenColumn>
+    <RadzenQRCode Value="@State.BuildUrl()" />
+</RadzenColumn>
+<footer>
+    <RadzenButton Click="@State.StopSession">Stop</RadzenButton>
+    <RadzenButton Click="@Session.NextStateAsync">Start sessie</RadzenButton>
+</footer>
