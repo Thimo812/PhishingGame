@@ -1,0 +1,28 @@
+﻿@page "/addtraining"
+
+@using Radzen.Blazor
+@using Radzen
+
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+
+<h3 class="text-xl font-bold mb-4">AddTraining</h3>
+
+<div class="mt-4">
+    <RadzenButton Text="Opslaan"
+                  ButtonStyle="ButtonStyle.Primary"
+                  Icon="save"
+                  Type="Submit"
+                  Style="margin-right:10px;" />
+
+    <RadzenButton Text="Annuleren"
+                  ButtonStyle="ButtonStyle.Light"
+                  Icon="close"
+                  Click="@Cancel" />
+</div>
+
+@code {
+    void Cancel() => NavigationManager.NavigateTo("/trainingoverview");
+}

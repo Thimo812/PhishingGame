@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PhishingGame.Data;
 
@@ -11,9 +12,11 @@ using PhishingGame.Data;
 namespace PhishingGame.Data.Migrations
 {
     [DbContext(typeof(PhishingDbContext))]
-    partial class PhishingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251117104531_AddTrainingModel1")]
+    partial class AddTrainingModel1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace PhishingGame.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("EmailTraining", b =>
-                {
-                    b.Property<Guid>("EmailsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TrainingsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("EmailsId", "TrainingsId");
-
-                    b.HasIndex("TrainingsId");
-
-                    b.ToTable("TrainingEmails", (string)null);
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -256,7 +244,12 @@ namespace PhishingGame.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TrainingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TrainingId");
 
                     b.ToTable("Emails");
                 });
@@ -274,21 +267,6 @@ namespace PhishingGame.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Trainings");
-                });
-
-            modelBuilder.Entity("EmailTraining", b =>
-                {
-                    b.HasOne("PhishingGame.Core.Models.Email", null)
-                        .WithMany()
-                        .HasForeignKey("EmailsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PhishingGame.Core.Models.Training", null)
-                        .WithMany()
-                        .HasForeignKey("TrainingsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -340,6 +318,20 @@ namespace PhishingGame.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("PhishingGame.Core.Models.Email", b =>
+                {
+                    b.HasOne("PhishingGame.Core.Models.Training", "Training")
+                        .WithMany("Emails")
+                        .HasForeignKey("TrainingId");
+
+                    b.Navigation("Training");
+                });
+
+            modelBuilder.Entity("PhishingGame.Core.Models.Training", b =>
+                {
+                    b.Navigation("Emails");
                 });
 #pragma warning restore 612, 618
         }
