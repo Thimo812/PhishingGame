@@ -1,13 +1,12 @@
 ﻿@using PhishingGame.Blazor.Components.Pages
 @page "/session/{SessionId:guid}"
-@page "/session"
 
 @if (CurrentState == null)
 {
     <SessionNotFound />
 }
 
-else if (ContainsPlayer)
+else if (!ContainsPlayer && !IsHost)
 {
     if (Session.CanJoin)
     {
@@ -21,6 +20,5 @@ else if (ContainsPlayer)
 
 else 
 {
-    <DynamicComponent Type="@CurrentState.PlayerViewType" Parameters="@CurrentState.Parameters" />
+    <DynamicComponent Type="@ViewType" Parameters="@CurrentState.Parameters" @key=Session?.CurrentState />
 }
-

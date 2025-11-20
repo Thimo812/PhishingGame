@@ -2,20 +2,26 @@
 @using Core
 @using Core.Models
 
+@inject IServiceProvider _serviceProvider
 @inject ISessionManager _sessionManager
-@page "/"
+@inject NavigationManager _navigator
+@page "/host"
 
-<RadzenButton Click="@OnClick">Start sessie</RadzenButton>
 
-<p>@Session?.SessionId</p>
+
+@if (Session == null)
+{
+    <RadzenButton Click="@OnClick">Start nieuwe sessie</RadzenButton>
+}
 
 @code {
     public Session? Session { get; set; }
+    public ILinkedState? CurrentState => Session?.CurrentState;
 
     public void OnClick()
     {
-        var session = _sessionManager.CreateSession(new());
-        session.Initialize();
-        Session = session;
+        Session = _sessionManager.CreateSession(new(), _serviceProvider);
+        Session.Initialize();
+        _navigator.NavigateTo($"session/{Session.SessionId}", true);
     }
 }

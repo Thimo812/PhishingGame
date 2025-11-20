@@ -11,5 +11,16 @@ public abstract class GameViewBase<TState> : ComponentBase, IGameView
 
     [Parameter]
     public TState State { get; set; }
+
     protected Session Session => State.Session;
+
+    protected override void OnParametersSet()
+    {
+        Session.PlayerJoined += OnPlayerJoined;
+    }
+
+    protected virtual async void OnPlayerJoined(Session session)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
 }

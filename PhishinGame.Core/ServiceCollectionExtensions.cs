@@ -6,13 +6,12 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSessions(this IServiceCollection services, StateDefinitionBuilder stateBuilder)
         => services
-            .AddSingleton<ISessionManager, SessionManager>()
-            .AddScoped<IUserService, UserService>()
-            .AddSingleton(services =>
+            .AddSingleton<ISessionManager, SessionManager>(services =>
             {
-                var states = new StateDefinition(services);
-                stateBuilder(states);
+                var stateConfig = new StateConfiguration();
+                stateBuilder(stateConfig);
 
-                return states;
-            });
+                return new SessionManager(stateConfig);
+            })
+            .AddScoped<IUserService, UserService>();
 }

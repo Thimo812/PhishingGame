@@ -1,16 +1,33 @@
 ﻿@using Radzen.Blazor;
+@using Radzen;
 @using PhishingGame.Blazor.States;
 @using PhishingGame.Core;
 @inherits GameViewBase<StartMenuState>
 @inject NavigationManager Navigator
 
-<RadzenColumn>
-    <RadzenDataList TItem="Player" Data="@Session.SessionData.Players" />
-</RadzenColumn>
-<RadzenColumn>
-    <RadzenQRCode Value="@State.BuildUrl()" />
-</RadzenColumn>
-<footer>
-    <RadzenButton Click="@State.StopSession">Stop</RadzenButton>
-    <RadzenButton Click="@Session.NextStateAsync">Start sessie</RadzenButton>
-</footer>
+<RadzenRow>
+    <RadzenColumn Size="8">
+        <RadzenPanel>
+            <HeaderTemplate>
+                <RadzenText TextStyle="TextStyle.H3">Spelers</RadzenText>
+            </HeaderTemplate>
+            <ChildContent>
+                <RadzenCard Variant="Variant.Outlined">
+                    <RadzenDataList WrapItems="true" TItem="Player" Data="@Session.SessionData.Players">
+                        <Template Context="player">
+                            <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+                        </Template>
+                    </RadzenDataList>
+                </RadzenCard>
+            </ChildContent>
+        </RadzenPanel>
+    </RadzenColumn>
+    <RadzenColumn Size="4">
+        <RadzenQRCode Value="@State.BuildUrl()" />
+    </RadzenColumn>
+</RadzenRow>
+<RadzenFooter>
+    <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@State.StopSession">Stop</RadzenButton>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Session.NextStateAsync">Start sessie</RadzenButton>
+</RadzenFooter>
+

@@ -4,15 +4,14 @@ using PhishingGame.Blazor.Components;
 using PhishingGame.Data;
 using PhishingGame.Core;
 using PhishingGame.Blazor.States;
+using PhishingGame.Blazor;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddSessions(states => states
-        .WithState<StartMenuState>()
-        .WithState<TeamLayoutState>())
+    .AddGameStates()
     .AddDbContext<PhishingDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
     .AddHttpContextAccessor()

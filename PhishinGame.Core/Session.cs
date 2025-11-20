@@ -3,7 +3,7 @@
 namespace PhishingGame.Core;
 
 public delegate void SessionUpdated(Session session);
-public class Session(ILinkedState state, Training training)
+public class Session(ILinkedState state, Training training, Guid hostId = default)
 {
     private const int _minPlayersPerTeam = 1;
     private const int _maxPlayersPerTeam = 5;
@@ -14,15 +14,17 @@ public class Session(ILinkedState state, Training training)
     public event SessionUpdated SessionEnded;
     public event SessionUpdated SessionStarted;
     public event SessionUpdated StateUpdated;
+    public event SessionUpdated PlayerJoined;
 
     public ILinkedState CurrentState { get; set; } = state;
     public Guid SessionId { get; set; } = Guid.NewGuid();
-    public Guid HostId { get; set; }
+    public Guid HostId { get; set; } = hostId;
     public bool CanJoin { get; set; } = true;
 
     public void AddPlayer(Guid id, string name)
     {
         SessionData.Players.Add(new Player(id, name));
+        PlayerJoined?.Invoke(this);
     }
 
     public void Initialize()
