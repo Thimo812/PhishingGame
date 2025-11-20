@@ -21,8 +21,34 @@ else
     <div style="padding:20px">
 
         <h4 style="color:#006699; border-bottom:2px solid #ccc; padding-bottom:5px;">@training.Name</h4>
+        <h3 style="margin-top:10px; color:#222;">E-mails in deze training:</h3>
 
+        @if (training.Emails == null || !training.Emails.Any())
+        {
+            <p>Geen e-mails gekoppeld aan deze training.</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var mail in training.Emails)
+                {
+                    <li class="list-group-item" style="margin-bottom:6px;">
 
+                        <strong>@mail.Sender</strong> — @mail.Subject
+
+                        @if (mail.IsPhishing)
+                        {
+                            <RadzenIcon Icon="flag" Style="color:red;" />
+                        }
+                        else
+                        {
+                            <span style="color:green;"></span>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    
 
         <div style="margin-top:15px;">
             <RadzenButton Text="Sluiten"
@@ -42,7 +68,9 @@ else
 
     async protected override Task OnInitializedAsync()
     {
-        training = await Db.Trainings.FirstOrDefaultAsync(e => e.Id == id);
+        training = await Db.Trainings.
+        Include(t => t.Emails).
+        FirstOrDefaultAsync(e => e.Id == id);
     }
 
    
