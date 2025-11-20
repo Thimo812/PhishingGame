@@ -21,6 +21,12 @@ public class StartMenuState(NavigationManager navigator, IUserService userServic
         _navigator.NavigateTo("/");
     }
 
+    public async Task StartSessionAsync()
+    {
+        await Session.StartAsync();
+        await Session.NextStateAsync();
+    }
+
     public string GetUserName()
     {
         var userId = _userService.GetUserId();

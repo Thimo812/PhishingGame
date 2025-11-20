@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PhishingGame.Core;
-using System.Runtime.CompilerServices;
 
 namespace PhishingGame.Blazor.Components.Pages;
 

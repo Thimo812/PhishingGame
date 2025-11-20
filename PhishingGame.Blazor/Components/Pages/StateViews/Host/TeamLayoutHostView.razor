@@ -1,13 +1,31 @@
 ﻿@using PhishingGame.Blazor.States
+@using Radzen
 @using Radzen.Blazor
 @using PhishingGame.Core
 @inherits GameViewBase<TeamLayoutState>
 
-<RadzenDataList TItem="Team" Data="Session.SessionData.Teams" PageSize="5" WrapItems="true">
-    <Template Context="team">
-        <RadzenCard>
-            <RadzenText>@team.Name</RadzenText>
-            <RadzenDataList TItem="Player" Data="@team.Players"/>
+<RadzenPanel>
+    <HeaderTemplate>
+        <RadzenText TextStyle="TextStyle.H3">Teams</RadzenText>
+    </HeaderTemplate>
+    <ChildContent>
+        <RadzenCard Variant="Variant.Outlined">
+            <RadzenDataList TItem="Team" WrapItems=true Data="@Session.SessionData.Teams">
+                <Template Context="team">
+                    <RadzenCard Variant="Variant.Outlined">
+                        <RadzenDataList TItem="Player" Data="@team.Players">
+                            <Template Context="player">
+                                <RadzenCard Variant="Variant.Filled">
+                                    <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+                                </RadzenCard>
+                            </Template>
+                        </RadzenDataList>
+                    </RadzenCard>
+                </Template>
+            </RadzenDataList>
         </RadzenCard>
-    </Template>
-</RadzenDataList>
+    </ChildContent>
+</RadzenPanel>
+<RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Session.NextStateAsync">Start sessie</RadzenButton>
+</RadzenFooter>

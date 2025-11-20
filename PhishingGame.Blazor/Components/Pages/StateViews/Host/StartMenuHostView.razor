@@ -13,9 +13,12 @@
             </HeaderTemplate>
             <ChildContent>
                 <RadzenCard Variant="Variant.Outlined">
-                    <RadzenDataList WrapItems="true" TItem="Player" Data="@Session.SessionData.Players">
+                    <RadzenDataList WrapItems="true" TItem="Player" Data="@Session.SessionData.Players"  
+                                    style="grid-template-columns: repeat(3, 1fr); display: grid; gap: 1rem;">
                         <Template Context="player">
-                            <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+                            <RadzenCard Variant="Variant.Filled" Style="width: 100%">
+                                <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+                            </RadzenCard>
                         </Template>
                     </RadzenDataList>
                 </RadzenCard>
@@ -26,8 +29,8 @@
         <RadzenQRCode Value="@State.BuildUrl()" />
     </RadzenColumn>
 </RadzenRow>
-<RadzenFooter>
+<RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
     <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@State.StopSession">Stop</RadzenButton>
-    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Session.NextStateAsync">Start sessie</RadzenButton>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@State.StartSessionAsync">Start sessie</RadzenButton>
 </RadzenFooter>
 
