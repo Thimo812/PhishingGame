@@ -1,0 +1,52 @@
+﻿@page "/training/{id:guid}"
+
+@using PhishingGame.Core.Models
+@using Radzen;
+@using Radzen.Blazor
+@using Microsoft.EntityFrameworkCore
+
+@inject NotificationService NotificationService
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject DialogService DialogService
+@inject NavigationManager NavigationManager
+
+@if (training == null)
+{
+    <p>training niet gevonden.</p>
+
+}
+else
+{
+
+    <div style="padding:20px">
+
+        <h4 style="color:#006699; border-bottom:2px solid #ccc; padding-bottom:5px;">@training.Name</h4>
+
+
+
+        <div style="margin-top:15px;">
+            <RadzenButton Text="Sluiten"
+                          Icon="close"
+                          Style="margin-right:5px;"
+                          Click="@ClosePage" />
+
+        </div>
+    </div>
+}
+
+
+@code {
+    [Parameter] public Training Training { get; set; } = default!;
+    [Parameter] public Guid id { get; set; }
+    private Training? training;
+
+    async protected override Task OnInitializedAsync()
+    {
+        training = await Db.Trainings.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+   
+
+    void ClosePage() => NavigationManager.NavigateTo("/trainingoverview");
+
+}

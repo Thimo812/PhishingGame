@@ -2,19 +2,22 @@
 @using Radzen.Blazor
 
 <RadzenLayout>
+
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0">
             <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
             <RadzenLabel Text= "Phishing Game" Style="font-size:20px; font-weight:bold; margin-left:10px;" />
             <RadzenIcon Icon="Phishing"/>
-            </RadzenStack>
-        </RadzenHeader>
+        </RadzenStack>
+     </RadzenHeader>
+
     <RadzenSidebar Expanded="@sidebar1Expanded" Style="width:250px;" Breakpoint="Breakpoint.Lg">
         <RadzenPanelMenu>
             <RadzenPanelMenuItem Text="Email" Icon="email" Path="/emailoverview" />
             <RadzenPanelMenuItem Text="Training" Icon="school" Path="/trainingoverview" />
         </RadzenPanelMenu>
     </RadzenSidebar>
+
 </RadzenLayout>
 
 

@@ -53,7 +53,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        trainings = await Db.Trainings.ToListAsync();
+        trainings = await Db.Trainings.
+        Include(t => t.Emails).
+        ToListAsync();
     }
 
 

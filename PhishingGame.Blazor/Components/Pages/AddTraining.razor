@@ -1,20 +1,39 @@
 ﻿@page "/addtraining"
 
+@using Microsoft.EntityFrameworkCore
 @using Radzen.Blazor
 @using Radzen
+@using PhishingGame.Core.Models
 
 @inject PhishingGame.Data.PhishingDbContext Db
 @inject NavigationManager NavigationManager
 @inject NotificationService NotificationService
 
 
-<h3 class="text-xl font-bold mb-4">AddTraining</h3>
+<h3 class="text-xl font-bold mb-4">Training toevoegen</h3>
+
+<div class="mb-3">
+    <label>Naam training:</label>
+    <input class="form-control" @bind="Training.Name" />
+</div>
+
+<h3>Kies een email</h3>
+
+@foreach (var email in Emails)
+{
+    <div>
+        <input type="checkbox"
+               value="@email.Id"
+               @onchange="(e) => OnEmailChecked(e, email.Id)" />
+        @email.Subject (@email.Sender)
+    </div>
+}
 
 <div class="mt-4">
     <RadzenButton Text="Opslaan"
                   ButtonStyle="ButtonStyle.Primary"
                   Icon="save"
-                  Type="Submit"
+                  Click="SaveTraining"
                   Style="margin-right:10px;" />
 
     <RadzenButton Text="Annuleren"
@@ -23,6 +42,48 @@
                   Click="@Cancel" />
 </div>
 
-@code {
+@code  {
+    private Training Training = new();
+    private List<Email> Emails = new();
+    private List<Guid> SelectedEmailsIds = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Emails = await Db.Emails.ToListAsync();
+    }
+
+    private void OnEmailChecked(ChangeEventArgs e, Guid emailId)
+    {
+        bool isChecked = (bool)e.Value;
+        if (isChecked)
+        {
+            if (!SelectedEmailsIds.Contains(emailId))
+            {
+                SelectedEmailsIds.Add(emailId);
+            }
+        }
+        else
+        {
+            SelectedEmailsIds.Remove(emailId);
+        }
+    }
+
+    private async Task SaveTraining()
+    {
+        Training.Emails = await Db.Emails
+            .Where(e => SelectedEmailsIds.Contains(e.Id))
+            .ToListAsync();
+        Db.Trainings.Add(Training);
+        await Db.SaveChangesAsync();
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Success,
+            Summary = "Succes",
+            Detail = "Training succesvol toegevoegd.",
+            Duration = 4000
+        });
+        NavigationManager.NavigateTo("/trainingoverview");
+    }
+
     void Cancel() => NavigationManager.NavigateTo("/trainingoverview");
 }
