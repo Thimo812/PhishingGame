@@ -1,70 +1,74 @@
 ﻿@page "/email/{id:guid}"
 
 @using PhishingGame.Core.Models
-@using Radzen;
+@using Microsoft.EntityFrameworkCore
+@using Radzen
 @using Radzen.Blazor
-@using Microsoft.EntityFrameworkCore 
 
-@inject NotificationService NotificationService
 @inject PhishingGame.Data.PhishingDbContext Db
-@inject DialogService DialogService
+@inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
 
-@if(email == null)
+@if (email == null)
 {
-    <p>E-mail niet gevonden.</p>
+    <RadzenCard Style="padding:20px; max-width:800px; margin:auto;">
+        <p>E-mail niet gevonden.</p>
+    </RadzenCard>
+}
+else
+{
+    <div class="email-container">
 
-} else {
 
-<div style="padding:20px">
+        <div class="email-header">
+            <div class="email-subject">@email.Subject</div>
+            <div class="email-sender">Van: @email.Sender</div>
+        </div>
 
-    <h4 style="color:#006699; border-bottom:2px solid #ccc; padding-bottom:5px;">@email.Sender</h4>
-    <h3 style="margin-top:10px; color:#222;">@email.Subject</h3>
 
-    <div style="margin-top:20px; white-space:pre-wrap;">
-        @email.Message
-     </div>
+        <div class="email-body">
+            <pre style="white-space:pre-wrap; font-family:inherit;">
+    @email.Message
+                </pre>
+        </div>
 
-     <div>
-        <RadzenCheckBox  @bind-Value="email.IsPhishing" TValue="bool" Change="OnPhishingChanged" />
-        <label class="ml-2">Markeer als phishing e-mail</label>
-     </div>
+        <div class="email-footer">
+            <label style="margin-right:10px;">Phishing?</label>
+            <RadzenCheckBox @bind-Value="email.IsPhishing" TValue="bool" Change="OnPhishingChanged" />
+        </div>
 
-     <div style="margin-top:15px;">
-            <RadzenButton Text="Sluiten"
-                          Icon="close"
-                          Style="margin-right:5px;"
-                          Click="@ClosePage" />
-
-     </div>
-</div>
+        <div style="margin-top:20px;">
+            <RadzenButton Text="Terug naar overzicht"
+                          Icon="arrow_back"
+                          Click="@ClosePage"
+                          ButtonStyle="ButtonStyle.Light" />
+        </div>
+    </div>
 }
 
-
 @code {
-    [Parameter] public Email Email { get; set; } = default!;
     [Parameter] public Guid id { get; set; }
     private Email? email;
 
-    async protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         email = await Db.Emails.FirstOrDefaultAsync(e => e.Id == id);
     }
 
     async Task OnPhishingChanged(bool value)
     {
-        Email.IsPhishing = (bool)value;
-        Db.Emails.Update(Email);
+        email.IsPhishing = value;
+        Db.Emails.Update(email);
         await Db.SaveChangesAsync();
+
         NotificationService.Notify(new NotificationMessage
         {
             Severity = NotificationSeverity.Success,
-            Summary = "Succes",
-            Detail = "E-mail is bijgewerkt.",
-            Duration = 4000
+            Summary = "Bewaard",
+            Detail = "De e-mail is bijgewerkt.",
+            Duration = 3000
         });
     }
 
     void ClosePage() => NavigationManager.NavigateTo("/emailoverview");
-
 }
