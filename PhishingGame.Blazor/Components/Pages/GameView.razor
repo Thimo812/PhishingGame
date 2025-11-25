@@ -20,5 +20,5 @@ else if (!ContainsPlayer && !IsHost)
 
 else 
 {
-    <DynamicComponent Type="@ViewType" Parameters="@CurrentState.Parameters" @key=Session?.CurrentState />
+    <DynamicComponent Type="@ViewType" Parameters="@ViewParameters" @key=Session?.CurrentState />
 }

@@ -8,6 +8,7 @@ public static class StateConfigurationExtensions
     public static IServiceCollection AddGameStates(this IServiceCollection services)
         => services.AddSessions(states => states
             .WithState<StartMenuState>()
-            .WithState<TeamLayoutState>());
+            .WithState<TeamLayoutState>()
+            .WithState<FirstRoundState>());
 }
 

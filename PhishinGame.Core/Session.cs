@@ -75,7 +75,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
         int playerCount = SessionData.Players.Count;
         int teamAmount = GetPreferredTeamAmount(playerCount);
 
-        for (int i = 0; i < teamAmount; i++)
+        for (int i = 1; i <= teamAmount; i++)
         {
             SessionData.Teams.Add(new Team { Name = $"Team {i}" });
         }
@@ -96,16 +96,11 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
     private int GetPreferredTeamAmount(int playerCount)
     {
-        if (playerCount < 4)
-        {
-            return 1;
-        }
-
         List<int> preferredSizes = [];
 
         for (int i = _minPlayersPerTeam; i <= _maxPlayersPerTeam; i++)
         {
-            if (playerCount % i == 0)
+            if (playerCount % i == 0 && playerCount / i > 1)
             {
                 preferredSizes.Add(i);
             }
@@ -119,7 +114,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
             foreach (int size in preferredSizes)
             {
                 int difference = Math.Abs(size - _preferredTeamAmount);
-                if ((bestDifference != null || difference < bestDifference) && playerCount / size > 1)
+                if ((bestDifference == null || difference < bestDifference) && playerCount / size > 1)
                 {
                     bestSize = size;
                 }

@@ -2,5 +2,16 @@
 @using PhishingGame.Blazor.States;
 @inherits GameViewBase<StartMenuState>
 
-<h1>Welkom @State.GetUserName()</h1>
+<h1>Welkom @GetUserName()</h1>
 <p>Wacht nog even totdat de game begint</p>
+
+@code {
+    string GetUserName()
+    {
+        if (!Session.TryGetPlayer(UserId, out var player))
+        {
+            throw new InvalidDataException("Player is not present");
+        }
+        return player.Name;
+    }
+}

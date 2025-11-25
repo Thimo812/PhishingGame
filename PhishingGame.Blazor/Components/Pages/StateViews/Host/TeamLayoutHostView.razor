@@ -12,15 +12,14 @@
         <RadzenCard Variant="Variant.Outlined">
             <RadzenDataList TItem="Team" WrapItems=true Data="@Session.SessionData.Teams">
                 <Template Context="team">
-                    <RadzenCard Variant="Variant.Outlined">
+                    <RadzenStack Orientation="Orientation.Vertical">
+                        <RadzenText TextStyle="TextStyle.H5">@team.Name</RadzenText>
                         <RadzenDataList TItem="Player" Data="@team.Players">
                             <Template Context="player">
-                                <RadzenCard Variant="Variant.Filled">
                                     <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
-                                </RadzenCard>
                             </Template>
                         </RadzenDataList>
-                    </RadzenCard>
+                    </RadzenStack>
                 </Template>
             </RadzenDataList>
         </RadzenCard>

@@ -1,0 +1,10 @@
+﻿@using PhishingGame.Blazor.States
+@using Radzen.Blazor
+@using Radzen
+
+@inherits GameViewBase<FirstRoundState>
+
+<RadzenText TextStyle="TextStyle.H1">@State.RemainingTime.ToString()</RadzenText>
+<RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
+    <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@State.StartCountDown">Start ronde</RadzenButton>
+</RadzenFooter>

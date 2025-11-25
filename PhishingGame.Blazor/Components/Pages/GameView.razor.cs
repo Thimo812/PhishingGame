@@ -25,6 +25,7 @@ public partial class GameView
                 _session.StateUpdated -= OnStateUpdated;
 
             _session = value;
+            if (_session == null) return;
             _session.StateUpdated += OnStateUpdated;
         }
     }
@@ -32,6 +33,7 @@ public partial class GameView
     public Guid UserId {  get; set; }
     public bool IsHost {  get; set; }
     public Type? ViewType => IsHost ? CurrentState?.HostViewType : CurrentState?.PlayerViewType;
+    public IDictionary<string, object> ViewParameters { get; set; }
     public bool ContainsPlayer => Session?.ContainsPlayer(UserId) ?? false;
 
     private void RegisterPlayer(string name)
@@ -45,6 +47,7 @@ public partial class GameView
 
     private async void OnStateUpdated(Session session)
     {
+        UpdateViewParameters();
         await InvokeAsync(StateHasChanged);
     }
 
@@ -53,5 +56,14 @@ public partial class GameView
         Session = _sessionManager.GetSession(SessionId);
         UserId = _userService.GetUserId();
         IsHost = Session.HostId == UserId;
+        UpdateViewParameters();
+    }
+
+    private void UpdateViewParameters()
+    {
+        ViewParameters = new Dictionary<string, object>(CurrentState.Parameters)
+        {
+            ["UserId"] = UserId
+        };
     }
 }

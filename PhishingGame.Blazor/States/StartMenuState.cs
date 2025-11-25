@@ -5,10 +5,9 @@ using PhishingGame.Core;
 
 namespace PhishingGame.Blazor.States;
 
-public class StartMenuState(NavigationManager navigator, IUserService userService) : LinkedStateBase<StartMenuHostView, StartMenuClientView>
+public class StartMenuState(NavigationManager navigator) : LinkedStateBase<StartMenuHostView, StartMenuClientView>
 {
     private NavigationManager _navigator = navigator;
-    private IUserService _userService = userService;
 
     public string BuildUrl()
     {
@@ -25,15 +24,5 @@ public class StartMenuState(NavigationManager navigator, IUserService userServic
     {
         await Session.StartAsync();
         await Session.NextStateAsync();
-    }
-
-    public string GetUserName()
-    {
-        var userId = _userService.GetUserId();
-        if (!Session.TryGetPlayer(userId, out var player))
-        {
-            throw new InvalidDataException("Player is not present");
-        }
-        return player.Name;
     }
 }

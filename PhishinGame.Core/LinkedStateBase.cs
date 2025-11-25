@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 
 namespace PhishingGame.Core;
 
@@ -10,12 +11,12 @@ public abstract class LinkedStateBase<THostView, TPlayerView> : ILinkedState
     public ILinkedState NextState { get; set; }
     public Type PlayerViewType => typeof(TPlayerView);
     public Type HostViewType => typeof(THostView);
-    public IDictionary<string, object?> Parameters { get; private set; }
+    public IDictionary<string, object> Parameters { get; private set; }
 
     public void InitializeState(Session session)
     {
         Session = session;
-        Parameters = new Dictionary<string, object?>
+        Parameters = new Dictionary<string, object>
         {
             ["State"] = this
         };

@@ -6,9 +6,4 @@ namespace PhishingGame.Blazor.States;
 
 public class TeamLayoutState : LinkedStateBase<TeamLayoutHostView, TeamLayoutClientView>
 {
-    public Team GetTeam(Guid playerId)
-    {
-        return Session.SessionData.Teams.FirstOrDefault(team => team.Players.Any(player => player.Id == playerId))
-            ?? throw new InvalidDataException("Player not found");
-    }
 }

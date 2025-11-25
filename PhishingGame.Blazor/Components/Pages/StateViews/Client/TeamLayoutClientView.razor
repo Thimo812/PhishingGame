@@ -1,18 +1,29 @@
 ﻿@using PhishingGame.Blazor.States
 @using Radzen.Blazor
+@using Radzen
 @using PhishingGame.Core
 @inherits GameViewBase<TeamLayoutState>
 
-<RadzenText>@Team.Name</RadzenText>
-<RadzenDataList TItem="Player" Data="@Team.Players" />
-
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenText TextStyle="TextStyle.H3">@Team.Name</RadzenText>
+    <RadzenDataList TItem="Player" Data="@Team.Players">
+        <Template Context="player">
+            <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+        </Template>
+    </RadzenDataList>
+</RadzenStack>
 
 @code {
     Team Team { get; set; }
 
     protected override void OnParametersSet()
     {
-        var userId = UserService.GetUserId();
-        Team = State.GetTeam(userId);
+        Team = GetTeam();
+    }
+
+    private Team GetTeam()
+    {
+        return Session.SessionData.Teams.FirstOrDefault(team => team.Players.Any(player => player.Id == UserId))
+            ?? throw new InvalidDataException("Player not found");
     }
 }

@@ -34,3 +34,11 @@
     <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@State.StartSessionAsync">Start sessie</RadzenButton>
 </RadzenFooter>
 
+@code {
+    protected override void OnParametersSet()
+    {
+        if (Session == null) return;
+        Session.PlayerJoined += async session => await InvokeAsync(StateHasChanged);
+    }
+}
+
