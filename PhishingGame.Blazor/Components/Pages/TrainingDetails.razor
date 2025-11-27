@@ -23,9 +23,45 @@ else
         <h4 style="color:#006699; border-bottom:2px solid #ccc; padding-bottom:5px;">@training.Name</h4>
         <h3 style="margin-top:10px; color:#222;">E-mails in deze training:</h3>
 
+
         @if (training.Emails == null || !training.Emails.Any())
         {
             <p>Geen e-mails gekoppeld aan deze training.</p>
+            <h3>Kies een email</h3>
+
+            <RadzenDataGrid TItem="Email"
+                            Data="@Emails"
+                            RowSelect="OnRowSelect"
+                            SelectionMode="DataGridSelectionMode.Single"
+                            AllowPaging="true"
+                            AllowSorting="true"
+                            PageSize="8"
+                            Class="rz-hoverable"
+                            Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+                <Columns>
+                     <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+
+                    <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+
+                    <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+                        <Template Context="email">
+                            <RadzenIcon Icon="flag"
+                                        Style="@(email.IsPhishing ? "color:red;" : "color:green;")" />
+                        </Template>
+                    </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="Email" Title="Selecteer">
+                        <Template Context="email">
+                           <div @onclick:stopPropagation="true">
+                               <RadzenCheckBox TValue="bool"
+                                                Value="@SelectedEmailsIds.Contains(email.Id)"
+                                                ValueChanged="@(isChecked => OnEmailChecked(isChecked, email.Id))"/>
+                           </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+
         }
         else
         {
@@ -58,6 +94,7 @@ else
                         </Template>
                     </RadzenDataGridColumn>
 
+
                     <RadzenDataGridColumn TItem="Email" Title="Acties">
                         <Template Context="email">
                             <RadzenButton Icon="delete"
@@ -65,11 +102,53 @@ else
                                           Size="ButtonSize.Small"
                                           Click="@(args => Delete(email))"
                                           @onclick:stopPropagation="true" />
+
                         </Template>
                     </RadzenDataGridColumn>
             
                 </Columns>
             </RadzenDataGrid>
+
+            <RadzenDataGrid TItem="Email" Data="Emails"
+                RowSelect="OnRowSelect"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowPaging=true
+                AllowSorting=true
+                PageSize="8"
+                class="rz-hoverable"
+                            Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-top: 20px;">
+                <Columns>
+                    <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+
+                    <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+                    <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+                        <Template Context="email">
+                            @if (email.IsPhishing)
+                            {
+                                <RadzenIcon Icon="flag" Style="color:red;" />
+                            }
+                            else
+                            {
+                                <RadzenIcon Icon="flag" Style="color:green;" />
+                            }
+                        </Template>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Email" Title="Selecteer">
+                        <Template Context="email">
+                            <div @onclick:stopPropagation="true">
+                                <RadzenCheckBox TValue="bool"
+                                                Value="@SelectedEmailsIds.Contains(email.Id)"
+                                                ValueChanged="@(isChecked => OnEmailChecked(isChecked, email.Id))" />
+                            </div>
+                        </Template>
+                    </RadzenDataGridColumn>
+
+
+
+                </Columns>
+
+            </RadzenDataGrid>
+
         }
     
 
@@ -78,6 +157,11 @@ else
                           Icon="close"
                           Style="margin-right:5px;"
                           Click="@ClosePage" />
+            <RadzenButton Text="Opslaan"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Icon="save"
+                          Click="SaveTraining"
+                          Style="margin-right:10px;" />
 
         </div>
     </div>
@@ -87,14 +171,38 @@ else
 @code {
     [Parameter] public Training Training { get; set; } = default!;
     [Parameter] public Guid id { get; set; }
+    private List<Guid> SelectedEmailsIds = new();
     private Training? training;
+    private List<Email> Emails = new();
 
     async protected override Task OnInitializedAsync()
     {
+        Emails = await Db.Emails.ToListAsync();
+
         training = await Db.Trainings.
         Include(t => t.Emails).
         FirstOrDefaultAsync(e => e.Id == id);
+
+        if (training?.Emails != null)
+        {
+            SelectedEmailsIds = training.Emails.Select(e => e.Id).ToList();
+        }
+
     }
+
+    private void OnEmailChecked(bool isChecked, Guid emailId)
+    {
+        if (isChecked)
+        {
+            if (!SelectedEmailsIds.Contains(emailId))
+                SelectedEmailsIds.Add(emailId);
+        }
+        else
+        {
+            SelectedEmailsIds.Remove(emailId);
+        }
+    }
+
 
     void OnRowSelect(Email email) => NavigationManager.NavigateTo($"/email/{email.Id}");
 
@@ -106,7 +214,27 @@ else
         {
             training.Emails.Remove(email);
             await Db.SaveChangesAsync();
+            
         }
+    }
+    async Task SaveTraining()
+    {
+        if (training == null) return;
+
+        training.Emails = Emails
+            .Where(e => SelectedEmailsIds.Contains(e.Id!))
+            .ToList();
+
+        Db.Trainings.Update(training);
+        await Db.SaveChangesAsync();
+
+        NotificationService.Notify(new()
+        {
+            Severity = NotificationSeverity.Success,
+            Summary = "Succes",
+            Detail = "Training succesvol bijgewerkt.",
+            Duration = 4000
+        });
     }
     void ClosePage() => NavigationManager.NavigateTo("/trainingoverview");
 
