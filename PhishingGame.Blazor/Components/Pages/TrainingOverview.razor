@@ -1,0 +1,76 @@
+﻿@page "/trainingoverview"
+
+@using Microsoft.EntityFrameworkCore
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject DialogService DialogService
+@inject NavigationManager NavigationManager
+
+<h3 class="text-xl font-bold mb-3">Trainingen beheren</h3>
+
+<RadzenButton Text="Nieuwe training" Icon="add_circle" Click="AddTraining" Style="margin-bottom: 10px;" />
+
+<RadzenDataGrid TItem="Training"
+                Data="@trainings"
+                RowSelect="OnRowSelect"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowPaging="true"
+                AllowSorting="true"
+                PageSize="8"
+                Class="rz-hoverable"
+                Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+    <Columns>
+        <RadzenDataGridColumn TItem="Training" Property="Name" Title="Naam" />
+        <RadzenDataGridColumn TItem="Training" Title="E-mails">
+            <Template Context="training">
+                <ul style="padding-left: 15px; margin: 0;">
+                    @foreach (var email in training.Emails)
+                    {
+                        <li>@email.Subject</li>
+                    }
+                </ul>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="Training" Title="Acties">
+            <Template Context="training">
+                <RadzenButton Icon="delete"
+                              ButtonStyle="ButtonStyle.Danger"
+                              Size="ButtonSize.Small"
+                              @onclick:stopPropagation="true"
+                              Click="@(args => Delete(training))" />
+            </Template>
+        </RadzenDataGridColumn>
+
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    private List<Training> trainings = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        trainings = await Db.Trainings.
+        Include(t => t.Emails).
+        ToListAsync();
+    }
+
+
+    void OnRowSelect(Training training) => NavigationManager.NavigateTo($"/training/{training.Id}");
+
+    async Task Delete(Training training)
+    {
+        var confirm = await DialogService.Confirm("Weet u zeker dat u deze training wilt verwijderen?", "Bevestigen.");
+        if (confirm == true)
+        {
+            Db.Trainings.Remove(training);
+            await Db.SaveChangesAsync();
+            trainings = await Db.Trainings.ToListAsync();
+        }
+    }
+
+    void AddTraining() => NavigationManager.NavigateTo("/addtraining");
+}

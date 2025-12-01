@@ -1,30 +1,26 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">PhishingGame.Blazor</a>
-    </div>
-</div>
+﻿@using Radzen
+@using Radzen.Blazor
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<RadzenLayout>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0">
+            <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
+            <RadzenLabel Text= "Phishing Game" Style="font-size:20px; font-weight:bold; margin-left:10px;" />
+            <RadzenIcon Icon="Phishing"/>
+        </RadzenStack>
+     </RadzenHeader>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+    <RadzenSidebar Expanded="@sidebar1Expanded" Style="width:250px;" Breakpoint="Breakpoint.Lg">
+        <RadzenPanelMenu>
+            <RadzenPanelMenuItem Text="Email" Icon="email" Path="/emailoverview" />
+            <RadzenPanelMenuItem Text="Training" Icon="school" Path="/trainingoverview" />
+        </RadzenPanelMenu>
+    </RadzenSidebar>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+</RadzenLayout>
 
+
+@code {
+    private bool sidebar1Expanded = true;
+}

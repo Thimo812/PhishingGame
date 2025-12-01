@@ -1,0 +1,90 @@
+﻿@page "/addemail"
+
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject NavigationManager NavigationManager
+@inject NotificationService NotificationService
+
+<h3 class="text-xl font-bold mb-4">Nieuwe e-mail toevoegen</h3>
+
+<RadzenTemplateForm TItem="Email" Data="@email" Submit="@SaveEmail" InvalidSubmit="@OnInvalidSubmit">
+
+    <div class="p-4 rounded-lg shadow-md" style="max-width:600px;">
+
+        <div class="mb-3">
+            <label class="font-semibold">Afzender</label>
+            <RadzenTextBox @bind-Value="email.Sender" Style="width:100%;" Name="Sender" />
+            <RadzenRequiredValidator Component="Sender" Text="Afzender is verplicht." />
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Onderwerp</label>
+            <RadzenTextBox @bind-Value="email.Subject" Style="width:100%;" Name="Subject" />
+            <RadzenRequiredValidator Component="Subject" Text="Onderwerp is verplicht." />
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Bericht</label>
+            <RadzenTextArea @bind-Value="email.Message" Rows="8" Style="width:100%;" Name="Message" />
+            <RadzenRequiredValidator Component="Message" Text="Bericht is verplicht." />
+        </div>
+
+        <div class="mb-3 flex items-center">
+            <RadzenCheckBox @bind-Value="email.IsPhishing" TValue="bool" Name="IsPhishing" />
+            <label class="ml-2">Markeer als phishing</label>
+        </div>
+
+        <div class="mt-4">
+            <RadzenButton Text="Opslaan"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Icon="save"
+                          Type="Submit"
+                          Style="margin-right:10px;" />
+
+            <RadzenButton Text="Annuleren"
+                          ButtonStyle="ButtonStyle.Light"
+                          Icon="close"
+                          Click="@Cancel" />
+        </div>
+
+    </div>
+
+</RadzenTemplateForm>
+
+
+@code {
+    private Email email = new();
+
+    async Task SaveEmail()
+    {
+        Db.Emails.Add(email);
+        await Db.SaveChangesAsync();
+
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "E-mail opgeslagen",
+                Detail = "De nieuwe e-mail is succesvol toegevoegd.",
+                Duration = 4000
+            });
+
+        NavigationManager.NavigateTo("/emailoverview");
+    }
+
+    void Cancel() => NavigationManager.NavigateTo("/emailoverview");
+
+    void OnInvalidSubmit()
+    {
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Fout",
+                Detail = "Vul alle verplichte velden in.",
+                Duration = 3000
+            });
+    }
+}

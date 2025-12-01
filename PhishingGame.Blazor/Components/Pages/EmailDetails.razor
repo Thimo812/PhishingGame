@@ -1,0 +1,75 @@
+﻿@page "/email/{id:guid}"
+
+@using PhishingGame.Core.Models
+@using Microsoft.EntityFrameworkCore
+@using Radzen
+@using Radzen.Blazor
+
+
+@inject PhishingGame.Data.PhishingDbContext Db
+@inject NotificationService NotificationService
+@inject NavigationManager NavigationManager
+
+@if (email == null)
+{
+    <RadzenCard Style="padding:20px; max-width:800px; margin:auto;">
+        <p>E-mail niet gevonden.</p>
+    </RadzenCard>
+}
+else
+{
+    <div class="email-container">
+
+
+        <div class="email-header">
+            <div class="email-subject">@email.Subject</div>
+            <div class="email-sender">Van: @email.Sender</div>
+        </div>
+
+
+        <div class="email-body">
+            <pre style="white-space:pre-wrap; font-family:inherit;">
+    @email.Message
+                </pre>
+        </div>
+
+        <div class="email-footer">
+            <label style="margin-right:10px;">Phishing?</label>
+            <RadzenCheckBox @bind-Value="email.IsPhishing" TValue="bool" Change="OnPhishingChanged" />
+        </div>
+
+        <div style="margin-top:20px;">
+            <RadzenButton Text="Terug naar overzicht"
+                          Icon="arrow_back"
+                          Click="@ClosePage"
+                          ButtonStyle="ButtonStyle.Light" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid id { get; set; }
+    private Email? email;
+
+    protected override async Task OnInitializedAsync()
+    {
+        email = await Db.Emails.FirstOrDefaultAsync(e => e.Id == id);
+    }
+
+    async Task OnPhishingChanged(bool value)
+    {
+        email.IsPhishing = value;
+        Db.Emails.Update(email);
+        await Db.SaveChangesAsync();
+
+        NotificationService.Notify(new NotificationMessage
+        {
+            Severity = NotificationSeverity.Success,
+            Summary = "Bewaard",
+            Detail = "De e-mail is bijgewerkt.",
+            Duration = 3000
+        });
+    }
+
+    void ClosePage() => NavigationManager.NavigateTo("/emailoverview");
+}

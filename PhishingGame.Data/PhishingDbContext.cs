@@ -24,4 +24,6 @@ public class PhishingDbContext(DbContextOptions<PhishingDbContext> options) : Id
             .WithMany(e => e.Trainings)
             .UsingEntity(j => j.ToTable("TrainingEmails"));
     }
+
+
 }

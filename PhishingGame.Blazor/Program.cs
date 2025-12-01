@@ -1,8 +1,11 @@
 using Radzen;
-using Microsoft.EntityFrameworkCore;
 using PhishingGame.Blazor.Components;
-using PhishingGame.Data;
+using PhishingGame.Blazor.Components.States;
 using PhishingGame.Core;
+using Microsoft.EntityFrameworkCore;
+using PhishingGame.Core.Models;
+using PhishingGame.Data;
+
 using PhishingGame.Blazor.States;
 using PhishingGame.Blazor;
 
@@ -19,6 +22,8 @@ builder.Services
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
+
+
 
 var app = builder.Build();
 
@@ -39,5 +44,15 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<PhishingDbContext>();
+    db.Database.Migrate(); 
+
+
+}
+
+
 
 app.Run();

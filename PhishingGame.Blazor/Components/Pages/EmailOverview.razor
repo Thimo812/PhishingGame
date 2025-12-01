@@ -52,9 +52,11 @@
                 <RadzenButton Icon="delete"
                               ButtonStyle="ButtonStyle.Danger"
                               Size="ButtonSize.Small"
+                              @onclick:stopPropagation="true"
                               Click="@(args => Delete(email))" />
             </Template>
         </RadzenDataGridColumn>
+
     </Columns>
 </RadzenDataGrid>
 
@@ -64,24 +66,10 @@
     protected override async Task OnInitializedAsync()
     {
         emails = await Db.Emails.ToListAsync();
-
-        // await DialogService.Alert("Test popup werkt!"); //test
     }
 
 
-    async void OnRowSelect(Email email)
-    {
-        Console.WriteLine($"✅ Eye button clicked: {email.Subject}");
-
-        await DialogService.OpenAsync<EmailDetailsDialog>(
-            "E-mail details",
-            new Dictionary<string, object>() { { "Email", email } },
-            new DialogOptions() { Width = "600px", Height = "auto", CloseDialogOnOverlayClick = true }
-        );
-
-        Console.WriteLine("🟢 DialogService.OpenAsync executed"); //test
-    }
-
+    void OnRowSelect(Email email) => NavigationManager.NavigateTo($"/email/{email.Id}");
 
     async Task Delete(Email email)
     {
