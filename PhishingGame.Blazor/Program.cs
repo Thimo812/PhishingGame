@@ -1,12 +1,11 @@
 using Radzen;
 using PhishingGame.Blazor.Components;
-using PhishingGame.Blazor.Components.States;
+using PhishingGame.Blazor.States;
 using PhishingGame.Core;
 using Microsoft.EntityFrameworkCore;
 using PhishingGame.Core.Models;
 using PhishingGame.Data;
 
-using PhishingGame.Blazor.States;
 using PhishingGame.Blazor;
 
 
