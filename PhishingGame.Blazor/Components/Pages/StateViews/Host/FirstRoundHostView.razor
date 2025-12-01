@@ -6,5 +6,31 @@
 
 <RadzenText TextStyle="TextStyle.H1">@State.RemainingTime.ToString()</RadzenText>
 <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
-    <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@State.StartCountDown">Start ronde</RadzenButton>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Continue">Volgende</RadzenButton>
 </RadzenFooter>
+
+@code {
+    private CancellationTokenSource _tokenSource;
+
+    public bool CountdownRunning { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        State.CountdownUpdated += OnCountdownChanged;
+        State.StartCountDown(_tokenSource.Token);
+        CountdownRunning = true;
+    }
+
+    private async void OnCountdownChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Continue()
+    {
+        _tokenSource.Cancel();
+        CountdownRunning = false;
+        await Session.NextStateAsync();
+    }
+}
+

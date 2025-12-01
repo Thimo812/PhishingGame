@@ -125,4 +125,36 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
         return _preferredTeamAmount;
     }
+
+    private void DispatchMails()
+    {
+        var normalMails = new List<Email>();
+        var phishingMails = new List<Email>();
+
+        foreach (var mail in SessionData.Training.Emails)
+        {
+            if (mail.IsPhishing)
+            {
+                phishingMails.Add(mail);
+            }
+            else normalMails.Add(mail);
+        }
+
+        int currentIndex = 0;
+
+        AddMails(normalMails, ref currentIndex);
+        AddMails(phishingMails, ref currentIndex);
+    }
+
+    private void AddMails(List<Email> mailSource, ref int currentIndex)
+    {
+        foreach (var mail in mailSource)
+        {
+            var team = SessionData.Teams.ElementAtOrDefault(currentIndex++);
+            if (team == null) return;
+            if (!SessionData.Mails.TryGetValue(team, out var mails)) continue;
+
+            mails.Add(mail);
+        }
+    }
 }

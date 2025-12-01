@@ -14,4 +14,14 @@ public class PhishingDbContext(DbContextOptions<PhishingDbContext> options) : Id
 {
     public DbSet<Email> Emails { get; set; }
     public DbSet<Training> Trainings { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Training>()
+            .HasMany(t => t.Emails)
+            .WithMany(e => e.Trainings)
+            .UsingEntity(j => j.ToTable("TrainingEmails"));
+    }
 }

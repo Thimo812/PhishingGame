@@ -6,4 +6,5 @@ public class Email : BaseModel
     public string Subject { get; set; }
     public string Message { get; set; }
     public bool IsPhishing { get; set; }
+    public List<Training> Trainings { get; set; }
 }

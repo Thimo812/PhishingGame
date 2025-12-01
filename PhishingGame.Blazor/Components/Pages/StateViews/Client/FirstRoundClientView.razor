@@ -1,5 +1,66 @@
 ﻿@using PhishingGame.Blazor.States
 @using Radzen.Blazor
 @using Radzen
+@using PhishingGame.Core.Models
+@using System.Linq
 
 @inherits GameViewBase<FirstRoundState>
+
+<RadzenDataGrid TItem="Email"
+                Data="@Data"
+                RowSelect="OnRowSelect"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowPaging="true"
+                AllowSorting="true"
+                PageSize="8"
+                Class="rz-hoverable"
+                Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+    <Columns>
+        <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+        <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+        <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+            <Template Context="email">
+                <RadzenButton Click="@(() => OnMailFlagged(email))">
+                    <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
+                </RadzenButton>
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="Email" Title="Bekijk">
+            <Template Context="email">
+                <RadzenButton Text="👁️"
+                              ButtonStyle="ButtonStyle.Light"
+                              Click="@(args => OnRowSelect(email))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+
+    [Parameter]
+    public IEnumerable<Email> Data { get; set; } = default!;
+
+    public List<Email> Flagged { get; set; } = new List<Email>();
+
+    private void OnRowSelect(Email email)
+    {
+        //show email view
+    }
+
+    private void OnMailFlagged(Email email)
+    {
+        if (Flagged.Contains(email))
+        {
+            Flagged.Remove(email);
+        }
+
+        else Flagged.Add(email);
+
+        StateHasChanged();
+    }
+
+    private string GetIconColor(Email email)
+        => Flagged.Contains(email) ? "red" : "green";
+}

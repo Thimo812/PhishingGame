@@ -1,7 +1,6 @@
 ﻿using PhishingGame.Blazor.Components.Pages.StateViews.Client;
 using PhishingGame.Blazor.Components.Pages.StateViews.Host;
 using PhishingGame.Core;
-using System.Diagnostics;
 
 namespace PhishingGame.Blazor.States;
 
@@ -9,23 +8,44 @@ public delegate void CountDownCallback();
 public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
 {
     public event CountDownCallback CountdownElapsed;
+    public event CountDownCallback CountdownUpdated;
 
-    public TimeSpan TotalTime => TimeSpan.FromSeconds(10);
-    public TimeSpan RemainingTime { get; set; }
-    
-    public void StartCountDown()
+    public TimeSpan TotalTime => TimeSpan.FromMinutes(10);
+
+    private TimeSpan _remainingTime;
+    public TimeSpan RemainingTime
     {
-        CountDown();
+        get => _remainingTime;
+        set
+        {
+            _remainingTime = value;
+            CountdownUpdated?.Invoke();
+        }
     }
 
-    public async Task CountDown()
+    public FirstRoundState()
     {
-        while(RemainingTime.Seconds > 0)
+        CountdownElapsed += OnCountdownElapsed;
+    }
+
+    public void StartCountDown(CancellationToken token)
+    {
+        CountDown(token);
+    }
+
+    public async Task CountDown(CancellationToken token)
+    {
+        RemainingTime = TotalTime;
+        while(RemainingTime.TotalSeconds > 0 && !token.IsCancellationRequested)
         {
             await Task.Delay(1000);
             RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
         }
+        CountdownElapsed?.Invoke();
+    }
 
+    private async void OnCountdownElapsed()
+    {
         await Session.NextStateAsync();
     }
 }
