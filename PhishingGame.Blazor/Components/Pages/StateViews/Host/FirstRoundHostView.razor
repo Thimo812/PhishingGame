@@ -16,6 +16,7 @@
 
     protected override void OnParametersSet()
     {
+        _tokenSource = new();
         State.CountdownUpdated += OnCountdownChanged;
         State.StartCountDown(_tokenSource.Token);
         CountdownRunning = true;
