@@ -23,7 +23,7 @@
 
     public void OnClick()
     {
-        var training = _dbContext.Trainings.First(training => training.Id == Guid.Parse("ef262231-1f12-41ff-f137-08de311c2c85"));
+        var training = _dbContext.Trainings.First();
         Session = _sessionManager.CreateSession(training, _serviceProvider);
         Session.Initialize();
         _navigator.NavigateTo($"session/{Session.SessionId}", true);

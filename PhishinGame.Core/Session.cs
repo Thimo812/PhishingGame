@@ -35,6 +35,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
     public async Task StartAsync()
     {
         CanJoin = false;
+        DispatchMails();
         CreateTeams();
 
         SessionStarted?.Invoke(this);

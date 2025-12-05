@@ -39,10 +39,15 @@
 
 @code {
 
-    [Parameter]
-    public IEnumerable<Email> Data { get; set; } = default!;
+    public IEnumerable<Email> Data { get; set; } 
 
-    public List<Email> Flagged { get; set; } = new List<Email>();
+    public List<Email> Flagged { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Flagged = State.FlaggedMails.TryGetValue(Team, out var flagged) ? flagged : new List<Email>();
+        Data = Session.SessionData.Mails.TryGetValue(Team, out var data) ? data : Enumerable.Empty<Email>();
+    }
 
     private void OnRowSelect(Email email)
     {
