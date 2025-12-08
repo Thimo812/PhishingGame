@@ -31,6 +31,7 @@ public partial class GameView
     }
     public ILinkedState? CurrentState => Session?.CurrentState;
     public Guid UserId {  get; set; }
+    public Team? Team {  get; set; }
     public bool IsHost {  get; set; }
     public Type? ViewType => IsHost ? CurrentState?.HostViewType : CurrentState?.PlayerViewType;
     public IDictionary<string, object> ViewParameters { get; set; }
@@ -55,15 +56,22 @@ public partial class GameView
     {
         Session = _sessionManager.GetSession(SessionId);
         UserId = _userService.GetUserId();
-        IsHost = Session.HostId == UserId;
+        Team = GetTeam();
+        IsHost = Session?.HostId == UserId;
         UpdateViewParameters();
     }
 
     private void UpdateViewParameters()
     {
+        Team ??= GetTeam();
+
         ViewParameters = new Dictionary<string, object>(CurrentState.Parameters)
         {
-            ["UserId"] = UserId
+            ["UserId"] = UserId,
+            ["Team"] = Team
         };
     }
+
+    private Team? GetTeam()
+        => Session?.SessionData.Teams.FirstOrDefault(team => team.Players.Any(player => player.Id == UserId));
 }

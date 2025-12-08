@@ -1,10 +1,13 @@
-﻿@using Radzen.Blazor
+﻿@using Microsoft.EntityFrameworkCore
+@using PhishingGame.Data
+@using Radzen.Blazor
 @using Core
 @using Core.Models
 
 @inject IServiceProvider _serviceProvider
 @inject ISessionManager _sessionManager
 @inject NavigationManager _navigator
+@inject PhishingDbContext _dbContext
 @page "/host"
 @page "/"
 
@@ -21,7 +24,8 @@
 
     public void OnClick()
     {
-        Session = _sessionManager.CreateSession(new(), _serviceProvider);
+        var training = _dbContext.Trainings.Include(training => training.Emails).First();
+        Session = _sessionManager.CreateSession(training, _serviceProvider);
         Session.Initialize();
         _navigator.NavigateTo($"session/{Session.SessionId}", true);
     }

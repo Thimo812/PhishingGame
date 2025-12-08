@@ -13,7 +13,7 @@ public abstract class LinkedStateBase<THostView, TPlayerView> : ILinkedState
     public Type HostViewType => typeof(THostView);
     public IDictionary<string, object> Parameters { get; private set; }
 
-    public void InitializeState(Session session)
+    public virtual void InitializeState(Session session)
     {
         Session = session;
         Parameters = new Dictionary<string, object>

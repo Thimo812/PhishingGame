@@ -1,6 +1,7 @@
 ﻿using PhishingGame.Blazor.Components.Pages.StateViews.Client;
 using PhishingGame.Blazor.Components.Pages.StateViews.Host;
 using PhishingGame.Core;
+using PhishingGame.Core.Models;
 
 namespace PhishingGame.Blazor.States;
 
@@ -23,9 +24,16 @@ public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundCli
         }
     }
 
-    public FirstRoundState()
+    public Dictionary<Team, List<Email>> FlaggedMails { get; set; } = new();
+
+    public override void InitializeState(Session session)
     {
-        CountdownElapsed += OnCountdownElapsed;
+        base.InitializeState(session);
+
+        foreach (var team in Session.SessionData.Teams)
+        {
+            FlaggedMails.Add(team, new List<Email>());
+        }
     }
 
     public void StartCountDown(CancellationToken token)
@@ -41,11 +49,12 @@ public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundCli
             await Task.Delay(1000);
             RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
         }
-        CountdownElapsed?.Invoke();
+        OnCountdownElapsed();
     }
 
     private async void OnCountdownElapsed()
     {
+        CountdownElapsed?.Invoke();
         await Session.NextStateAsync();
     }
 }

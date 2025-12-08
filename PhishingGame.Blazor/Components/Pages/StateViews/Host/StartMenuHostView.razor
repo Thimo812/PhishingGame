@@ -1,9 +1,11 @@
-﻿@using Radzen.Blazor;
+﻿@using PhishingGame.Core.Exceptions
+@using Radzen.Blazor;
 @using Radzen;
 @using PhishingGame.Blazor.States;
 @using PhishingGame.Core;
 @inherits GameViewBase<StartMenuState>
 @inject NavigationManager Navigator
+@inject DialogService DialogService
 
 <RadzenRow>
     <RadzenColumn Size="8">
@@ -31,7 +33,7 @@
 </RadzenRow>
 <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
     <RadzenButton ButtonStyle="ButtonStyle.Primary" Click="@State.StopSession">Stop</RadzenButton>
-    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@State.StartSessionAsync">Start sessie</RadzenButton>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="StartSessionAsync">Start sessie</RadzenButton>
 </RadzenFooter>
 
 @code {
@@ -39,6 +41,18 @@
     {
         if (Session == null) return;
         Session.PlayerJoined += async session => await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task StartSessionAsync()
+    {
+        try
+        {
+            await State.StartSessionAsync();
+        }
+        catch(InvalidPlayerCountException)
+        {
+            await DialogService.Alert("Wacht totdat er tenminste twee spelers aanwezig zijn", "Game kan niet gestart worden", new() { CloseDialogOnOverlayClick = true });
+        }
     }
 }
 

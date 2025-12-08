@@ -12,5 +12,8 @@ public abstract class GameViewBase<TState> : ComponentBase, IGameView
     [Parameter]
     public TState State { get; set; }
 
+    [Parameter]
+    public Team Team { get; set; }
+
     protected Session Session => State.Session;
 }
