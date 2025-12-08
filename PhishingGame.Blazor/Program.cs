@@ -14,6 +14,7 @@ builder.Services
     .AddGameStates()
     .AddDbContext<PhishingDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
+    .AddRadzenComponents()
     .AddHttpContextAccessor()
     .AddRazorComponents()
     .AddInteractiveServerComponents();

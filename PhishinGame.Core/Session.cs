@@ -1,4 +1,5 @@
-﻿using PhishingGame.Core.Models;
+﻿using PhishingGame.Core.Exceptions;
+using PhishingGame.Core.Models;
 
 namespace PhishingGame.Core;
 
@@ -7,7 +8,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 {
     private const int _minPlayersPerTeam = 1;
     private const int _maxPlayersPerTeam = 5;
-    private const int _preferredTeamAmount = 3;
+    private const int _preferredTeamSize = 3;
 
     public SessionData SessionData { get; set; } = new() { Training = training };
 
@@ -34,9 +35,12 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
     public async Task StartAsync()
     {
+        if (SessionData.Players.Count < 2)
+            throw new InvalidPlayerCountException("At least two players are needed to start");
+
         CanJoin = false;
-        DispatchMails();
         CreateTeams();
+        DispatchMails();
 
         SessionStarted?.Invoke(this);
     }
@@ -74,7 +78,8 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
     private void CreateTeams()
     {
         int playerCount = SessionData.Players.Count;
-        int teamAmount = GetPreferredTeamAmount(playerCount);
+        int teamSize = GetPreferredTeamSize(playerCount);
+        int teamAmount = playerCount / teamSize;
 
         for (int i = 1; i <= teamAmount; i++)
         {
@@ -95,7 +100,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
         }
     }
 
-    private int GetPreferredTeamAmount(int playerCount)
+    private int GetPreferredTeamSize(int playerCount)
     {
         List<int> preferredSizes = [];
 
@@ -114,7 +119,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
             foreach (int size in preferredSizes)
             {
-                int difference = Math.Abs(size - _preferredTeamAmount);
+                int difference = Math.Abs(size - _preferredTeamSize);
                 if ((bestDifference == null || difference < bestDifference) && playerCount / size > 1)
                 {
                     bestSize = size;
@@ -124,7 +129,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
             if (bestSize != null) return bestSize.Value;
         }
 
-        return _preferredTeamAmount;
+        return _preferredTeamSize;
     }
 
     private void DispatchMails()
@@ -141,6 +146,8 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
             else normalMails.Add(mail);
         }
 
+        foreach (var team in SessionData.Teams) SessionData.Mails.TryAdd(team, []);
+
         int currentIndex = 0;
 
         AddMails(normalMails, ref currentIndex);
@@ -153,6 +160,7 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
         {
             var team = SessionData.Teams.ElementAtOrDefault(currentIndex++);
             if (team == null) return;
+            if (currentIndex >= SessionData.Teams.Count) currentIndex = 0;
             if (!SessionData.Mails.TryGetValue(team, out var mails)) continue;
 
             mails.Add(mail);
