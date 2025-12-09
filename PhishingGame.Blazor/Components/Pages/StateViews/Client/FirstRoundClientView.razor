@@ -2,6 +2,7 @@
 @using Radzen.Blazor
 @using Radzen
 @using PhishingGame.Core.Models
+@using PhishingGame.Core;
 @using System.Linq
 
 @inherits GameViewBase<FirstRoundState>
@@ -39,14 +40,17 @@
 
 @code {
 
-    public IEnumerable<Email> Data { get; set; } 
+    public IEnumerable<Email> Data { get; set; } = Enumerable.Empty<Email>();
 
-    public List<Email> Flagged { get; set; }
+    public List<Email> Flagged { get; set; } = new();
 
     protected override void OnParametersSet()
     {
         Flagged = State.FlaggedMails.TryGetValue(Team, out var flagged) ? flagged : new List<Email>();
         Data = Session.SessionData.Mails.TryGetValue(Team, out var data) ? data : Enumerable.Empty<Email>();
+
+        State.EmailFlagged -= UpdateFlaggedMails;
+        State.EmailFlagged += UpdateFlaggedMails;
     }
 
     private void OnRowSelect(Email email)
@@ -63,9 +67,21 @@
 
         else Flagged.Add(email);
 
-        StateHasChanged();
+        State.OnEmailFlagged(Team, email);
+    }
+
+    private async void UpdateFlaggedMails(Team team, Email email)
+    {
+        if (team == null || !team.Equals(Team)) return;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private string GetIconColor(Email email)
         => Flagged.Contains(email) ? "red" : "green";
+
+    public void Dispose()
+    {
+        State.EmailFlagged -= UpdateFlaggedMails;
+    }
 }
