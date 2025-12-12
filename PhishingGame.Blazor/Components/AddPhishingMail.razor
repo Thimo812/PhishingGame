@@ -1,0 +1,55 @@
+﻿@using PhishingGame.Core
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+
+@inject NotificationService NotificationService
+@inject IUserService UserService
+@inject ISessionManager SessionManager
+@inject NavigationManager Navigator
+
+@page "/{SessionId:guid}/AddPhishingMail"
+
+<RadzenText TextStyle="TextStyle.H3">Phishing mail toevoegen</RadzenText>
+
+<EmailForm
+    @bind-value="Email"
+    OnSubmit="@OnSubmit"
+    OnInvalidSubmit="@OnInvalidSubmit"
+    />
+
+
+
+@code {
+    public Email Email { get; set; }
+    public Session Session { get; set; }
+    public Guid SessionId { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        Email = new();
+        Session = SessionManager.GetSession(SessionId);
+
+        if (Session == null)
+        {
+            Navigator.NavigateTo("/NotFound");
+        }
+    }
+
+    private void OnSubmit(Email email)
+    {
+        
+    }
+
+    private void OnInvalidSubmit()
+    {
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Fout",
+                Detail = "Vul alle verplichte velden in.",
+                Duration = 3000
+            });
+    }
+}

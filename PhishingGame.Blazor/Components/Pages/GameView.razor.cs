@@ -69,7 +69,7 @@ public partial class GameView
         {
             ["UserId"] = UserId,
             ["Team"] = Team
-        };
+        }; 
     }
 
     private Team? GetTeam()

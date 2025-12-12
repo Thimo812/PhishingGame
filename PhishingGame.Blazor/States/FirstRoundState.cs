@@ -5,25 +5,13 @@ using PhishingGame.Core.Models;
 
 namespace PhishingGame.Blazor.States;
 
-public delegate void CountDownCallback();
-public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
+public delegate void EmailFlaggedCallback(Team team, Email mail);
+public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
 {
-    public event CountDownCallback CountdownElapsed;
-    public event CountDownCallback CountdownUpdated;
+    public event EmailFlaggedCallback EmailFlagged;
 
+    public Core.ITimer Timer { get; set; } = timer;
     public TimeSpan TotalTime => TimeSpan.FromMinutes(10);
-
-    private TimeSpan _remainingTime;
-    public TimeSpan RemainingTime
-    {
-        get => _remainingTime;
-        set
-        {
-            _remainingTime = value;
-            CountdownUpdated?.Invoke();
-        }
-    }
-
     public Dictionary<Team, List<Email>> FlaggedMails { get; set; } = new();
 
     public override void InitializeState(Session session)
@@ -34,27 +22,40 @@ public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundCli
         {
             FlaggedMails.Add(team, new List<Email>());
         }
+
+        Timer.CountdownElapsed += OnCountdownElapsed;
     }
 
     public void StartCountDown(CancellationToken token)
     {
-        CountDown(token);
+        Timer.StartCountdown(TotalTime, token);
     }
 
-    public async Task CountDown(CancellationToken token)
+    public void NotifyEmailFlagged(Team team, Email mail)
     {
-        RemainingTime = TotalTime;
-        while(RemainingTime.TotalSeconds > 0 && !token.IsCancellationRequested)
-        {
-            await Task.Delay(1000);
-            RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
-        }
-        OnCountdownElapsed();
+        EmailFlagged?.Invoke(team, mail);
     }
 
     private async void OnCountdownElapsed()
     {
-        CountdownElapsed?.Invoke();
+        CalculateScores();
         await Session.NextStateAsync();
+    }
+
+    private void CalculateScores()
+    {
+        foreach ((Team team, List<Email> flaggedMails) in FlaggedMails)
+        {
+            var allMails = Session.SessionData.Mails[team];
+            int mistakes = MistakeCount(allMails, flaggedMails);
+            int phishingMailCount = allMails.Count(mail => mail.IsPhishing);
+
+            team.score = (phishingMailCount - mistakes) * 100 / phishingMailCount;
+        }
+    }
+
+    private int MistakeCount(List<Email> allMails, List<Email> flagged)
+    {
+        return allMails.Count(mail => !mail.IsPhishing ^ flagged.Contains(mail));
     }
 }

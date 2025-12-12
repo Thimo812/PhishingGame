@@ -1,0 +1,61 @@
+﻿@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+
+<RadzenTemplateForm TItem="Email" Data="@Value" Submit="@OnSubmit" InvalidSubmit="@OnInvalidSubmit">
+
+    <div class="p-4 rounded-lg shadow-md" style="max-width:600px;">
+
+        <div class="mb-3">
+            <label class="font-semibold">Afzender</label>
+            <RadzenTextBox @bind-Value="Value.Sender" Style="width:100%;" Name="Sender" />
+            <RadzenRequiredValidator Component="Sender" Text="Afzender is verplicht." />
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Onderwerp</label>
+            <RadzenTextBox @bind-Value="Value.Subject" Style="width:100%;" Name="Subject" />
+            <RadzenRequiredValidator Component="Subject" Text="Onderwerp is verplicht." />
+        </div>
+
+        <div class="mb-3">
+            <label class="font-semibold">Bericht</label>
+            <RadzenTextArea @bind-Value="Value.Message" Rows="8" Style="width:100%;" Name="Message" />
+            <RadzenRequiredValidator Component="Message" Text="Bericht is verplicht." />
+        </div>
+
+        <div class="mb-3 flex items-center">
+            <RadzenCheckBox @bind-Value="Value.IsPhishing" TValue="bool" Name="IsPhishing" />
+            <label class="ml-2">Markeer als phishing</label>
+        </div>
+
+        <div class="mt-4">
+            <RadzenButton Text="Opslaan"
+                          ButtonStyle="ButtonStyle.Primary"
+                          Icon="save"
+                          Type="Submit"
+                          Style="margin-right:10px;" />
+                          l
+            <RadzenButton Text="Annuleren"
+                          ButtonStyle="ButtonStyle.Light"
+                          Icon="close"
+                          Click="@OnCancel" />
+        </div>
+
+    </div>
+
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public EventCallback<Email> OnSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback<FormInvalidSubmitEventArgs> OnInvalidSubmit { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnCancel { get; set; }
+
+    [Parameter]
+    public Email Value { get; set; }
+}

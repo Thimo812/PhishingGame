@@ -4,7 +4,7 @@
 
 @inherits GameViewBase<FirstRoundState>
 
-<RadzenText TextStyle="TextStyle.H1">@State.RemainingTime.ToString()</RadzenText>
+<RadzenText TextStyle="TextStyle.H1">@State.Timer.RemainingTime.ToString()</RadzenText>
 <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
     <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Continue">Volgende</RadzenButton>
 </RadzenFooter>
@@ -12,14 +12,11 @@
 @code {
     private CancellationTokenSource _tokenSource;
 
-    public bool CountdownRunning { get; set; }
-
     protected override void OnParametersSet()
     {
         _tokenSource = new();
-        State.CountdownUpdated += OnCountdownChanged;
+        State.Timer.CountdownUpdated += OnCountdownChanged;
         State.StartCountDown(_tokenSource.Token);
-        CountdownRunning = true;
     }
 
     private async void OnCountdownChanged()
@@ -30,7 +27,6 @@
     private async Task Continue()
     {
         _tokenSource.Cancel();
-        CountdownRunning = false;
         await Session.NextStateAsync();
     }
 }

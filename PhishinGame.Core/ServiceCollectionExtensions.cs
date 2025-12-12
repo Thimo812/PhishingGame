@@ -13,5 +13,6 @@ public static class ServiceCollectionExtensions
 
                 return new SessionManager(stateConfig);
             })
-            .AddScoped<IUserService, UserService>();
+            .AddScoped<IUserService, UserService>()
+            .AddTransient<ITimer, Timer>();
 }
