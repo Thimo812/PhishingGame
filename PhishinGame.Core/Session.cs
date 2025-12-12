@@ -47,6 +47,8 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
     public async Task NextStateAsync()
     {
+        if (CurrentState == null) { throw new InvalidOperationException("CurrentState is null in NextStateSync"); }
+        if (CurrentState.NextState == null) { throw new InvalidOperationException($"NextState is not configured for state {CurrentState.GetType().Name}"); }
         CurrentState = CurrentState.NextState;
         CurrentState.InitializeState(this);
 

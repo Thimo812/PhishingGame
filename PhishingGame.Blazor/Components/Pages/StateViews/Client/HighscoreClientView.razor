@@ -1,0 +1,30 @@
+﻿@using PhishingGame.Blazor.States
+@using PhishingGame.Core
+@inherits GameViewBase<HighscoreState>
+
+<h3>Highscores — Player view</h3>
+
+@if (Session?.CurrentState is HighscoreState state)
+{
+    @if (state.RankedTeams == null || state.RankedTeams.Count == 0)
+    {
+        <p>No teams available.</p>
+    }
+    else
+    {
+        <ol>
+            @foreach (var team in state.RankedTeams)
+            {
+                <li>@team.Name — @team.Score</li>
+            }
+        </ol>
+    }
+}
+else
+{
+    <p class="text-muted">Highscore not initialized.</p>
+}
+
+@code {
+    [CascadingParameter] public Session Session { get; set; }
+}

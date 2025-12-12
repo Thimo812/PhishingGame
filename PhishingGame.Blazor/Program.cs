@@ -22,6 +22,8 @@ builder.Services
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
+builder.Services.AddScoped<TrainingState>();
+
 
 
 
@@ -51,6 +53,13 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate(); 
 
 
+}
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var state = scope.ServiceProvider.GetRequiredService<TrainingState>();
+    state.SeedExampleTeams("TestTraining");
 }
 
 

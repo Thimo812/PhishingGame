@@ -9,6 +9,7 @@ public static class StateConfigurationExtensions
         => services.AddSessions(states => states
             .WithState<StartMenuState>()
             .WithState<TeamLayoutState>()
-            .WithState<FirstRoundState>());
+            .WithState<FirstRoundState>()
+            .WithState<HighscoreState>());
 }
 

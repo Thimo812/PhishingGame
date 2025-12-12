@@ -1,0 +1,66 @@
+﻿razor PhishingGame.Blazor\Components\Pages\TrainingScores.razor
+@page "/training/{TrainingName}/scores"
+
+@using PhishingGame.Core
+@using PhishingGame.Blazor.States
+
+@inject TrainingState State
+
+<h3>@(TrainingName ?? "Training") — Team Scores</h3>
+
+<p class="text-muted">Training: @TrainingName — Teams: @(Teams?.Count ?? 0)</p>
+
+<button class="btn btn-sm btn-outline-primary mb-3" @onclick="SeedAndRefresh">Seed test data</button>
+
+@if (Teams == null || Teams.Count == 0)
+{
+    <p>No teams available.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width:60px;">#</th>
+                <th>Team</th>
+                <th class="text-end" style="width:120px;">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Sorted.Count; i++)
+            {
+                var team = Sorted[i];
+                <tr class="@(i == 0 ? "table-success" : "")">
+                    <td>@(i + 1)</td>
+                    <td>@team.Name</td>
+                    <td class="text-end">@team.Score</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public string TrainingName { get; set; } = string.Empty;
+
+    [Parameter]
+    public List<Team> Teams { get; set; } = new();
+
+    private IReadOnlyList<Team> Sorted
+      => Teams
+          .OrderByDescending(t => t.Score)
+          .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
+          .ToList();
+
+    protected override void OnParametersSet()
+    {
+        Teams = State.GetOrCreateTeams(TrainingName ?? string.Empty);
+    }
+
+    private void SeedAndRefresh()
+    {
+        State.SeedExampleTeams(TrainingName ?? string.Empty);
+        Teams = State.GetOrCreateTeams(TrainingName ?? string.Empty);
+    }
+}
