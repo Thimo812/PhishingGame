@@ -1,15 +1,57 @@
 ﻿@using PhishingGame.Blazor.States
 @using PhishingGame.Core
+@using Radzen
 @using Radzen.Blazor
 @using Core.Models;
 
 @inherits GameViewBase<EmailCompositionState>
 
+<RadzenDataGrid TItem="Email"
+                Data="@Data"
+                RowSelect="OnRowSelect"
+                SelectionMode="DataGridSelectionMode.Single"
+                AllowPaging="true"
+                AllowSorting="true"
+                PageSize="8"
+                Class="rz-hoverable"
+                Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+    <Columns>
+        <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+        <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+        <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+            <Template Context="email">
+                <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="Email" Title="Bekijk">
+            <Template Context="email">
+                <RadzenButton Text="👁️"
+                              ButtonStyle="ButtonStyle.Light"
+                              Click="@(args => OnRowSelect(email))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
 @code {
+    public List<Email> Data { get; set; } = default!;
+
     protected override void OnParametersSet()
     {
         State.EmailsUpdated += OnEmailsUpdated;
+
+        Data = Session.SessionData.Mails.TryGetValue(Team, out var data) ? data : new List<Email>();
     }
+
+    private void OnRowSelect(Email email)
+    {
+        
+    }
+
+    private string GetIconColor(Email email)
+        => email.IsPhishing ? "red" : "green";
 
     private async void OnEmailsUpdated(Team team, List<Email> mails)
     {

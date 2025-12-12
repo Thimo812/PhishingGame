@@ -17,6 +17,13 @@ public class EmailCompositionState : LinkedStateBase<EmailCompositionHostView, E
         RemovePhishingMails();
     }
 
+    public void AddEmail(Team team, Email email)
+    {
+        var mails = Session.SessionData.Mails[team];
+        mails.Add(email);
+        NotifyEmailChanged(team);
+    }
+
     public void NotifyEmailChanged(Team team)
     {
         var mails = Session.SessionData.Mails[team];

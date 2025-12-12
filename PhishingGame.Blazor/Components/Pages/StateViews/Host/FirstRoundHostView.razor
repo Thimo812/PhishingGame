@@ -27,7 +27,7 @@
     private async Task Continue()
     {
         _tokenSource.Cancel();
-        await Session.NextStateAsync();
+        await State.ContinueAsync();
     }
 }
 

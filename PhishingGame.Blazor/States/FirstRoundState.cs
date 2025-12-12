@@ -23,7 +23,7 @@ public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHost
             FlaggedMails.Add(team, new List<Email>());
         }
 
-        Timer.CountdownElapsed += OnCountdownElapsed;
+        Timer.CountdownElapsed += async () => await ContinueAsync();
     }
 
     public void StartCountDown(CancellationToken token)
@@ -36,7 +36,7 @@ public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHost
         EmailFlagged?.Invoke(team, mail);
     }
 
-    private async void OnCountdownElapsed()
+    public async Task ContinueAsync()
     {
         CalculateScores();
         await Session.NextStateAsync();
