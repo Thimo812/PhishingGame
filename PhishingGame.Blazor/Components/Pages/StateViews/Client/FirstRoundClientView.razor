@@ -67,7 +67,7 @@
 
         else Flagged.Add(email);
 
-        State.OnEmailFlagged(Team, email);
+        State.NotifyEmailFlagged(Team, email);
     }
 
     private async void UpdateFlaggedMails(Team team, Email email)

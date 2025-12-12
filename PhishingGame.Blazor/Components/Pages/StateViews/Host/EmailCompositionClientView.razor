@@ -1,0 +1,20 @@
+﻿@using PhishingGame.Blazor.States
+@using PhishingGame.Core
+@using Radzen.Blazor
+@using Core.Models;
+
+@inherits GameViewBase<EmailCompositionState>
+
+@code {
+    protected override void OnParametersSet()
+    {
+        State.EmailsUpdated += OnEmailsUpdated;
+    }
+
+    private async void OnEmailsUpdated(Team team, List<Email> mails)
+    {
+        if (!Team.Equals(team)) return;
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

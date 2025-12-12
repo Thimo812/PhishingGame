@@ -2,30 +2,16 @@
 using PhishingGame.Blazor.Components.Pages.StateViews.Host;
 using PhishingGame.Core;
 using PhishingGame.Core.Models;
-using System.Net.Mail;
 
 namespace PhishingGame.Blazor.States;
 
-public delegate void CountDownCallback();
 public delegate void EmailFlaggedCallback(Team team, Email mail);
-public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
+public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
 {
-    public event CountDownCallback CountdownUpdated;
     public event EmailFlaggedCallback EmailFlagged;
 
+    public Core.ITimer Timer { get; set; } = timer;
     public TimeSpan TotalTime => TimeSpan.FromMinutes(10);
-
-    private TimeSpan _remainingTime;
-    public TimeSpan RemainingTime
-    {
-        get => _remainingTime;
-        set
-        {
-            _remainingTime = value;
-            CountdownUpdated?.Invoke();
-        }
-    }
-
     public Dictionary<Team, List<Email>> FlaggedMails { get; set; } = new();
 
     public override void InitializeState(Session session)
@@ -36,25 +22,16 @@ public class FirstRoundState : LinkedStateBase<FirstRoundHostView, FirstRoundCli
         {
             FlaggedMails.Add(team, new List<Email>());
         }
+
+        Timer.CountdownElapsed += OnCountdownElapsed;
     }
 
     public void StartCountDown(CancellationToken token)
     {
-        CountDown(token);
+        Timer.StartCountdown(TotalTime, token);
     }
 
-    public async Task CountDown(CancellationToken token)
-    {
-        RemainingTime = TotalTime;
-        while(RemainingTime.TotalSeconds > 0 && !token.IsCancellationRequested)
-        {
-            await Task.Delay(1000);
-            RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
-        }
-        OnCountdownElapsed();
-    }
-
-    public void OnEmailFlagged(Team team, Email mail)
+    public void NotifyEmailFlagged(Team team, Email mail)
     {
         EmailFlagged?.Invoke(team, mail);
     }
