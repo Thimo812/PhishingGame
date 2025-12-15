@@ -9,7 +9,7 @@
 @inject ISessionManager SessionManager
 @inject NavigationManager Navigator
 
-@page "/{SessionId:guid}/AddPhishingMail"
+@page "/{SessionId:guid}/PhishingMail"
 
 <RadzenText TextStyle="TextStyle.H3">Phishing mail toevoegen</RadzenText>
 
@@ -17,6 +17,8 @@
     @bind-value="Email"
     OnSubmit="@OnSubmit"
     OnInvalidSubmit="@OnInvalidSubmit"
+    ReadOnly=false
+    OnCancel="OnCancel"
     />
 
 @code {
@@ -24,18 +26,19 @@
     public Session Session { get; set; }
     public EmailCompositionState State => (EmailCompositionState)Session.CurrentState;
     public Guid SessionId { get; set; }
+    public Guid EmailId { get; set; }
     public Guid UserId { get; set; } = default!;
+    public Team Team => GetTeam(UserId);
 
     protected override void OnParametersSet()
     {
-        Email = new() { IsPhishing = true };
-        UserId = UserService.GetUserId();
-        Session = SessionManager.GetSession(SessionId);
-
-        if (Session == null || !Session.ContainsPlayer(UserId) || Session.CurrentState is not EmailCompositionState)
+        if (Session?.ContainsPlayer(UserId) == false || 
+            Session!.CurrentState is not EmailCompositionState)
         {
             Navigator.NavigateTo("/NotFound");
         }
+
+        Email = new() { IsPhishing = true };
     }
 
     private void OnSubmit(Email email)
@@ -57,5 +60,15 @@
                 Detail = "Vul alle verplichte velden in.",
                 Duration = 3000
             });
+    }
+
+    private Team GetTeam(Guid userId)
+    {
+        return Session.SessionData.Teams.First(team => team.Players.Any(player => player.Id == UserId));
+    }
+
+    private void OnCancel()
+    {
+        Navigator.NavigateTo($"/{SessionId}");
     }
 }

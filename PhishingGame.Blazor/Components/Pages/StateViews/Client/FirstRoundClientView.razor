@@ -7,6 +7,8 @@
 
 @inherits GameViewBase<FirstRoundState>
 
+@inject NavigationManager Navigator
+
 <RadzenDataGrid TItem="Email"
                 Data="@Data"
                 RowSelect="OnRowSelect"
@@ -55,7 +57,7 @@
 
     private void OnRowSelect(Email email)
     {
-        //show email view
+        Navigator.NavigateTo($"/{Session.SessionId}/Mail/{email.Id}");
     }
 
     private void OnMailFlagged(Email email)
