@@ -6,7 +6,7 @@ using PhishingGame.Core.Models;
 namespace PhishingGame.Blazor.States;
 
 public delegate void EmailFlaggedCallback(Team team, Email mail);
-public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHostView, FirstRoundClientView>
+public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRoundHostView, FlaggingRoundClientView>
 {
     public event EmailFlaggedCallback EmailFlagged;
 
@@ -50,7 +50,7 @@ public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHost
             int mistakes = MistakeCount(allMails, flaggedMails);
             int phishingMailCount = allMails.Count(mail => mail.IsPhishing);
 
-            team.score = (phishingMailCount - mistakes) * 100 / phishingMailCount;
+            team.score += (phishingMailCount - mistakes) * 100 / phishingMailCount;
         }
     }
 

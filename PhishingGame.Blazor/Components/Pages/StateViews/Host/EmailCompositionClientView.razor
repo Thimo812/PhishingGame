@@ -6,6 +6,10 @@
 
 @inherits GameViewBase<EmailCompositionState>
 
+@inject NavigationManager Navigator
+
+<RadzenButton Text="Nieuwe e-mail" Icon="add_circle" Click="AddEmail" Style="margin-bottom: 10px;" />
+
 <RadzenDataGrid TItem="Email"
                 Data="@Data"
                 RowSelect="OnRowSelect"
@@ -47,7 +51,12 @@
 
     private void OnRowSelect(Email email)
     {
-        
+        Navigator.NavigateTo($"/session/{Session.SessionId}/mail/{email.Id}");
+    }
+
+    private void AddEmail()
+    {
+        Navigator.NavigateTo($"/session/{Session.SessionId}/addmail");
     }
 
     private string GetIconColor(Email email)

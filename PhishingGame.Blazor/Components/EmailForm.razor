@@ -59,5 +59,8 @@
     public Email Value { get; set; }
 
     [Parameter]
+    public EventCallback<Email> ValueChanged { get; set; }
+
+    [Parameter]
     public bool ReadOnly { get; set; } = false;
 }

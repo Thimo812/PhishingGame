@@ -5,7 +5,7 @@
 @inject ISessionManager SessionManager
 @inject NavigationManager Navigator
 
-@page "/{SessionId:guid}/Mail/{EmailId:guid}"
+@page "/session/{SessionId:guid}/mail/{EmailId:guid}"
 
 <EmailForm @bind-value="Email"
            ReadOnly=true 
@@ -13,8 +13,12 @@
            />
 
 @code {
+    [Parameter]
     public Guid SessionId { get; set; }
+
+    [Parameter]
     public Guid EmailId { get; set; }
+
     public Guid UserId => UserService.GetUserId();
 
     public Email Email { get; set; }
@@ -41,6 +45,6 @@
 
     private void OnCancel()
     {
-        Navigator.NavigateTo($"/{SessionId}");
+        Navigator.NavigateTo($"/session/{SessionId}");
     }
 }

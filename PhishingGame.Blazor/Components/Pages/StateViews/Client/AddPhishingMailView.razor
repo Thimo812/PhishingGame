@@ -9,7 +9,7 @@
 @inject ISessionManager SessionManager
 @inject NavigationManager Navigator
 
-@page "/{SessionId:guid}/PhishingMail"
+@page "/session/{SessionId:guid}/addmail"
 
 <RadzenText TextStyle="TextStyle.H3">Phishing mail toevoegen</RadzenText>
 
@@ -69,6 +69,6 @@
 
     private void OnCancel()
     {
-        Navigator.NavigateTo($"/{SessionId}");
+        Navigator.NavigateTo($"/session/{SessionId}");
     }
 }

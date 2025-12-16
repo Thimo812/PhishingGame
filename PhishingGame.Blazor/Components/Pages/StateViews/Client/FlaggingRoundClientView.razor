@@ -5,7 +5,7 @@
 @using PhishingGame.Core;
 @using System.Linq
 
-@inherits GameViewBase<FirstRoundState>
+@inherits GameViewBase<FlaggingRoundState>
 
 @inject NavigationManager Navigator
 
@@ -57,7 +57,7 @@
 
     private void OnRowSelect(Email email)
     {
-        Navigator.NavigateTo($"/{Session.SessionId}/Mail/{email.Id}");
+        Navigator.NavigateTo($"/session/{Session.SessionId}/mail/{email.Id}");
     }
 
     private void OnMailFlagged(Email email)
