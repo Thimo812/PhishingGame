@@ -1,11 +1,10 @@
 ﻿using PhishingGame.Blazor.Components.Pages.StateViews.Client;
 using PhishingGame.Blazor.Components.Pages.StateViews.Host;
 using PhishingGame.Core;
-
+using PhishingGame.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PhishingGame.Core.Models;
 
 namespace PhishingGame.Blazor.States;
 
@@ -16,17 +15,20 @@ public class HighscoreState : LinkedStateBase<HighscoreHostView, HighscoreClient
     public override void InitializeState(Session session)
     {
         base.InitializeState(session);
+        RecalculateRanking();
+    }
 
-        if (session?.SessionData?.Teams != null)
-        {
-            RankedTeams = session.SessionData.Teams
-                .OrderByDescending(t => t.Score)
-                .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-        }
-        else
+    public void RecalculateRanking()
+    {
+        if (Session?.SessionData?.Teams == null)
         {
             RankedTeams = new List<Team>();
+            return;
         }
+
+        RankedTeams = Session.SessionData.Teams
+            .OrderByDescending(t => t.Score)
+            .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 }

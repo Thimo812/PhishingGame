@@ -46,7 +46,15 @@
 
     protected override void OnParametersSet()
     {
-        Flagged = State.FlaggedMails.TryGetValue(Team, out var flagged) ? flagged : new List<Email>();
+           if (State.FlaggedMails.TryGetValue(Team, out var flaggedGuids) && Session.SessionData.Mails.TryGetValue(Team, out var emails))
+        {
+            Flagged = emails.Where(e => flaggedGuids.Contains(e.Id)).ToList();
+        }
+        else
+        {
+            Flagged = new List<Email>();
+        }
+
         Data = Session.SessionData.Mails.TryGetValue(Team, out var data) ? data : Enumerable.Empty<Email>();
 
         State.EmailFlagged -= UpdateFlaggedMails;
