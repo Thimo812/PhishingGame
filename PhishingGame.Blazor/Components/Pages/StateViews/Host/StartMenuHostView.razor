@@ -11,7 +11,7 @@
     <RadzenColumn Size="8">
         <RadzenPanel>
             <HeaderTemplate>
-                <RadzenText TextStyle="TextStyle.H3">Spelers</RadzenText>
+                <RadzenText TextStyle="TextStyle.H3" TextAlign="TextAlign.Center">Spelers</RadzenText>
             </HeaderTemplate>
             <ChildContent>
                 <RadzenCard Variant="Variant.Outlined">
@@ -47,7 +47,7 @@
     {
         try
         {
-            await State.StartSessionAsync();
+            await Session.NextStateAsync();
         }
         catch(InvalidPlayerCountException)
         {

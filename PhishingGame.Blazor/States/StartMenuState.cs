@@ -20,9 +20,8 @@ public class StartMenuState(NavigationManager navigator) : LinkedStateBase<Start
         _navigator.NavigateTo("/");
     }
 
-    public async Task StartSessionAsync()
+    public override async Task OnStateChangedAsync()
     {
         await Session.StartAsync();
-        await Session.NextStateAsync();
     }
 }

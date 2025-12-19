@@ -47,6 +47,9 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
 
     public async Task NextStateAsync()
     {
+        CurrentState.OnStateChanged();
+        await CurrentState.OnStateChangedAsync();
+
         CurrentState = CurrentState.NextState;
         CurrentState.InitializeState(this);
 

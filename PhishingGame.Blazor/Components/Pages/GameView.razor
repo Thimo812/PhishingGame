@@ -1,5 +1,9 @@
 ﻿@using PhishingGame.Blazor.Components.Pages
+@using PhishingGame.Core
+
 @page "/session/{SessionId:guid}"
+
+@implements IGameView
 
 @if (CurrentState == null)
 {

@@ -4,9 +4,16 @@
 
 @inherits GameViewBase<FlaggingRoundState>
 
-<RadzenText TextStyle="TextStyle.H1">@State.Timer.RemainingTime.ToString()</RadzenText>
+<RadzenStack Style="height:100vh"
+             AlignItems="AlignItems.Center"
+             JustifyContent="JustifyContent.Center">
+    <RadzenCard Variant="Variant.Filled">
+        <RadzenText TextStyle="TextStyle.DisplayH1">@State.Timer.RemainingTime.ToString()</RadzenText>
+    </RadzenCard>
+</RadzenStack>
+
 <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
-    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Continue">Volgende</RadzenButton>
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Continue">Ronde Beëindigen</RadzenButton>
 </RadzenFooter>
 
 @code {
@@ -27,7 +34,7 @@
     private async Task Continue()
     {
         _tokenSource.Cancel();
-        await State.ContinueAsync();
+        await Session.NextStateAsync();
     }
 }
 

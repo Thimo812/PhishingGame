@@ -2,8 +2,12 @@
 @using PhishingGame.Blazor.States;
 @inherits GameViewBase<StartMenuState>
 
-<h1>Welkom @GetUserName()</h1>
-<p>Wacht nog even totdat de game begint</p>
+<RadzenStack Style="height:100vh"
+             AlignItems="Radzen.AlignItems.Center"
+             JustifyContent="Radzen.JustifyContent.Center">
+    <h1>Welkom @GetUserName()</h1>
+    <p>Wacht nog even totdat de game begint</p>
+</RadzenStack>
 
 @code {
     string GetUserName()

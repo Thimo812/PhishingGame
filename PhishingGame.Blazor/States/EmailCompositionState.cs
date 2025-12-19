@@ -18,16 +18,14 @@ public class EmailCompositionState(Core.ITimer timer) : LinkedStateBase<EmailCom
     {
         base.InitializeState(session);
 
-        Timer.CountdownElapsed += async () => await ContinueAsync();
+        Timer.CountdownElapsed += async () => await Session.NextStateAsync();
 
         RemovePhishingMails();
     }
 
-    public async Task ContinueAsync()
+    public override void OnStateChanged()
     {
         ShuffleMails();
-
-        await Session.NextStateAsync();
     }
 
     public void StartCountDown(CancellationToken token)
@@ -58,18 +56,16 @@ public class EmailCompositionState(Core.ITimer timer) : LinkedStateBase<EmailCom
 
     private void ShuffleMails()
     {
-        List<Email> firstValue = null;
-
         var mailDict = Session.SessionData.Mails;
+        var last = mailDict.Last().Value;
 
         for (int i = 0; i < mailDict.Count; i++)
         {
-            if (i == 0)
-            {
-                firstValue = mailDict.ElementAt(i).Value;
-            }
+            var team = mailDict.ElementAt(i).Key;
+            var temp = mailDict.ElementAt(i).Value;
 
-
+            mailDict[team] = last;
+            last = temp;
         }
     }
 }

@@ -21,4 +21,7 @@ public abstract class LinkedStateBase<THostView, TPlayerView> : ILinkedState
             ["State"] = this
         };
     }
+
+    public virtual void OnStateChanged() { }
+    public virtual Task OnStateChangedAsync() => Task.CompletedTask;
 }

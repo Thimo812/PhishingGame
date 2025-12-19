@@ -6,17 +6,19 @@
 
 <RadzenPanel>
     <HeaderTemplate>
-        <RadzenText TextStyle="TextStyle.H3">Teams</RadzenText>
+        <RadzenStack AlignItems="AlignItems.Center">
+            <RadzenText TextStyle="TextStyle.H3" TextAlign="TextAlign.Center">Teams</RadzenText>
+        </RadzenStack>
     </HeaderTemplate>
     <ChildContent>
-        <RadzenCard Variant="Variant.Outlined">
+        <RadzenCard Variant="Variant.Filled">
             <RadzenDataList TItem="Team" WrapItems=true Data="@Session.SessionData.Teams">
                 <Template Context="team">
-                    <RadzenStack Orientation="Orientation.Vertical">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
                         <RadzenText TextStyle="TextStyle.H5">@team.Name</RadzenText>
                         <RadzenDataList TItem="Player" Data="@team.Players">
                             <Template Context="player">
-                                    <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
+                                    <RadzenText TextStyle="TextStyle.H6">@player.Name</RadzenText>
                             </Template>
                         </RadzenDataList>
                     </RadzenStack>

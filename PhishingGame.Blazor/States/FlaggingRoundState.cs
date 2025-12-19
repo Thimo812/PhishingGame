@@ -23,7 +23,7 @@ public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRou
             FlaggedMails.Add(team, new List<Email>());
         }
 
-        Timer.CountdownElapsed += async () => await ContinueAsync();
+        Timer.CountdownElapsed += async () => await Session.NextStateAsync();
     }
 
     public void StartCountDown(CancellationToken token)
@@ -36,10 +36,9 @@ public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRou
         EmailFlagged?.Invoke(team, mail);
     }
 
-    public async Task ContinueAsync()
+    public override void OnStateChanged()
     {
         CalculateScores();
-        await Session.NextStateAsync();
     }
 
     private void CalculateScores()
@@ -48,9 +47,8 @@ public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRou
         {
             var allMails = Session.SessionData.Mails[team];
             int mistakes = MistakeCount(allMails, flaggedMails);
-            int phishingMailCount = allMails.Count(mail => mail.IsPhishing);
 
-            team.score += (phishingMailCount - mistakes) * 100 / phishingMailCount;
+            team.Score += 100 - (100 * mistakes / allMails.Count);
         }
     }
 

@@ -23,17 +23,9 @@
     <Columns>
         <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
         <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
-        <RadzenDataGridColumn TItem="Email" Title="Phishing?">
+        <RadzenDataGridColumn TItem="Email" Title="Phishing?" Width="75px">
             <Template Context="email">
                 <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
-            </Template>
-        </RadzenDataGridColumn>
-
-        <RadzenDataGridColumn TItem="Email" Title="Bekijk">
-            <Template Context="email">
-                <RadzenButton Text="👁️"
-                              ButtonStyle="ButtonStyle.Light"
-                              Click="@(args => OnRowSelect(email))" />
             </Template>
         </RadzenDataGridColumn>
     </Columns>

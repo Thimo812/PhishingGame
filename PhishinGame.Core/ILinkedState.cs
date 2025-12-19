@@ -10,4 +10,6 @@ public interface ILinkedState
     Type HostViewType { get; }
     IDictionary<string, object?> Parameters { get; }
     void InitializeState(Session session);
+    void OnStateChanged();
+    Task OnStateChangedAsync();
 }

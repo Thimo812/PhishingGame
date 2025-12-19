@@ -4,7 +4,8 @@
 @using PhishingGame.Core
 @inherits GameViewBase<TeamLayoutState>
 
-<RadzenStack Orientation="Orientation.Vertical">
+<RadzenStack Orientation="Orientation.Vertical"
+             AlignItems="AlignItems.Center">
     <RadzenText TextStyle="TextStyle.H3">@Team.Name</RadzenText>
     <RadzenDataList TItem="Player" Data="@Team.Players">
         <Template Context="player">

@@ -25,7 +25,8 @@ namespace PhishingGame.Core
                 await Task.Delay(1000);
                 RemainingTime = RemainingTime.Subtract(TimeSpan.FromSeconds(1));
             }
-            CountdownElapsed?.Invoke();
+
+            if (!token.IsCancellationRequested) CountdownElapsed?.Invoke();
         }
     }
 }
