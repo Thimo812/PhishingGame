@@ -6,6 +6,7 @@
 @using System.Linq
 
 @inherits GameViewBase<FirstRoundState>
+@inject NavigationManager NavigationManager
 
 <RadzenDataGrid TItem="Email"
                 Data="@Data"
@@ -27,14 +28,7 @@
                 </RadzenButton>
             </Template>
         </RadzenDataGridColumn>
-
-        <RadzenDataGridColumn TItem="Email" Title="Bekijk">
-            <Template Context="email">
-                <RadzenButton Text="👁️"
-                              ButtonStyle="ButtonStyle.Light"
-                              Click="@(args => OnRowSelect(email))" />
-            </Template>
-        </RadzenDataGridColumn>
+>
     </Columns>
 </RadzenDataGrid>
 
@@ -61,10 +55,7 @@
         State.EmailFlagged += UpdateFlaggedMails;
     }
 
-    private void OnRowSelect(Email email)
-    {
-        //show email view
-    }
+    void OnRowSelect(Email email) => NavigationManager.NavigateTo($"/email/{email.Id}");
 
     private void OnMailFlagged(Email email)
     {
