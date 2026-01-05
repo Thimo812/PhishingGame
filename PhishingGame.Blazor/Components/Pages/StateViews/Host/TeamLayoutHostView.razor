@@ -14,7 +14,7 @@
         <RadzenCard Variant="Variant.Filled">
             <RadzenDataList TItem="Team" WrapItems=true Data="@Session.SessionData.Teams">
                 <Template Context="team">
-                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
+                    <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Stretch">
                         <RadzenText TextStyle="TextStyle.H5">@team.Name</RadzenText>
                         <RadzenDataList TItem="Player" Data="@team.Players">
                             <Template Context="player">

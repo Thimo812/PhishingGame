@@ -26,9 +26,9 @@ public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRou
         Timer.CountdownElapsed += async () => await Session.NextStateAsync();
     }
 
-    public void StartCountDown(CancellationToken token)
+    public void StartCountDown()
     {
-        Timer.StartCountdown(TotalTime, token);
+        Timer.Start(TotalTime);
     }
 
     public void NotifyEmailFlagged(Team team, Email mail)

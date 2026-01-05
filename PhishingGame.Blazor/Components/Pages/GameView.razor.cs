@@ -11,6 +11,9 @@ public partial class GameView
     [Inject]
     private IUserService _userService { get; set; } = default!;
 
+    [Inject]
+    private NavigationManager _navigator {  get; set; } = default!;
+
     [Parameter]
     public Guid SessionId { get; set; }
 
@@ -55,6 +58,13 @@ public partial class GameView
     protected override async Task OnParametersSetAsync()
     {
         Session = _sessionManager.GetSession(SessionId);
+
+        if (Session == null)
+        {
+            _navigator.NavigateTo("/notfound");
+            return;
+        }
+
         UserId = _userService.GetUserId();
         Team = GetTeam();
         IsHost = Session?.HostId == UserId;

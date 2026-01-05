@@ -6,7 +6,7 @@ public interface ITimer
     event CountDownCallback CountdownUpdated;
     event CountDownCallback CountdownElapsed;
 
-    TimeSpan RemainingTime { get; }
-
-    Task StartCountdown(TimeSpan totalTime, CancellationToken token);
+    TimeSpan RemainingTime { get; set; }
+    bool Active { get; set; }
+    void Start(TimeSpan totalTime);
 }

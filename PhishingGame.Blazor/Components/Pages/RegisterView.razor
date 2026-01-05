@@ -1,8 +1,12 @@
 ﻿@using Radzen.Blazor
 
-<h1>Wat is je naam?</h1>
-<RadzenTextBox @bind-Value="@Name" />
-<RadzenButton Click="Submit">Enter</RadzenButton>
+<RadzenStack Style="height:100vh"
+             AlignItems="Radzen.AlignItems.Center"
+             JustifyContent="Radzen.JustifyContent.Center">
+    <h1>Wat is je naam?</h1>
+    <RadzenTextBox @bind-Value="@Name" />
+    <RadzenButton Click="Submit">Enter</RadzenButton>
+</RadzenStack>
 
 @code {
     [Parameter]

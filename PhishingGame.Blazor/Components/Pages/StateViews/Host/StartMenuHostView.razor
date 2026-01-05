@@ -15,10 +15,9 @@
             </HeaderTemplate>
             <ChildContent>
                 <RadzenCard Variant="Variant.Outlined">
-                    <RadzenDataList WrapItems="true" TItem="Player" Data="@Session.SessionData.Players"  
-                                    style="grid-template-columns: repeat(3, 1fr); display: grid; gap: 1rem;">
+                    <RadzenDataList WrapItems="true" TItem="Player" Data="@Session.SessionData.Players">
                         <Template Context="player">
-                            <RadzenCard Variant="Variant.Filled" Style="width: 100%">
+                            <RadzenCard Variant="Variant.Filled">
                                 <RadzenText TextStyle="TextStyle.Body1">@player.Name</RadzenText>
                             </RadzenCard>
                         </Template>

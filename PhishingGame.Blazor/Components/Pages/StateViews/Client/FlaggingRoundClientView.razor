@@ -24,7 +24,8 @@
         <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
         <RadzenDataGridColumn TItem="Email" Title="Phishing?" Width="75px">
             <Template Context="email">
-                <RadzenButton Click="@(() => OnMailFlagged(email))">
+                <RadzenButton Click="@(() => OnMailFlagged(email))"
+                              @onclick:stopPropagation="true">
                     <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
                 </RadzenButton>
             </Template>

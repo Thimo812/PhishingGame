@@ -17,13 +17,14 @@
 </RadzenFooter>
 
 @code {
-    private CancellationTokenSource _tokenSource;
 
     protected override void OnParametersSet()
     {
-        _tokenSource = new();
         State.Timer.CountdownUpdated += OnCountdownChanged;
-        State.StartCountDown(_tokenSource.Token);
+
+        if (State.Timer.Active) return;
+
+        State.StartCountDown();
     }
 
     private async void OnCountdownChanged()
@@ -33,7 +34,7 @@
 
     private async Task Continue()
     {
-        _tokenSource.Cancel();
+        State.Timer.Active = false;
         await Session.NextStateAsync();
     }
 }

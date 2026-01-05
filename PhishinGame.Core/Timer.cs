@@ -10,16 +10,36 @@ namespace PhishingGame.Core
         public TimeSpan RemainingTime
         {
             get => _remainingTime;
-            private set
+            set
             {
                 _remainingTime = value;
                 CountdownUpdated?.Invoke();
             }
         }
 
-        public async Task StartCountdown(TimeSpan totalTime, CancellationToken token)
+        private bool _active = false;
+        public bool Active
         {
-            RemainingTime = totalTime;
+            get => _active;
+            set
+            {
+                if (_active == value) return;
+                _active = value;
+
+                if (_active && _tokenSource.TryReset())
+                {
+                    StartCountdown(_tokenSource.Token);
+                    return;
+                }
+
+                _tokenSource.Cancel();
+            }
+        }
+
+        private CancellationTokenSource _tokenSource = new(); 
+
+        private async Task StartCountdown(CancellationToken token)
+        {
             while (RemainingTime.TotalSeconds > 0 && !token.IsCancellationRequested)
             {
                 await Task.Delay(1000);
@@ -27,6 +47,12 @@ namespace PhishingGame.Core
             }
 
             if (!token.IsCancellationRequested) CountdownElapsed?.Invoke();
+        }
+
+        public void Start(TimeSpan totalTime)
+        {
+            RemainingTime = totalTime;
+            Active = true;
         }
     }
 }

@@ -9,8 +9,11 @@ public static class StateConfigurationExtensions
         => services.AddSessions(states => states
             .WithState<StartMenuState>()
             .WithState<TeamLayoutState>()
+            .WithState<FirstRoundInstructionState>()
             .WithState<FlaggingRoundState>()
+            .WithState<EmailCompositionInstructionState>()
             .WithState<EmailCompositionState>()
+            .WithState<SecondRoundInstructionState>()
             .WithState<FlaggingRoundState>());
 }
 

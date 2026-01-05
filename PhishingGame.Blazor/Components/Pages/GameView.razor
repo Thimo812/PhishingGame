@@ -7,7 +7,7 @@
 
 @if (CurrentState == null)
 {
-    <SessionNotFound />
+    _navigator.NavigateTo("/notfound");
 }
 
 else if (!ContainsPlayer && !IsHost)

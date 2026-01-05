@@ -28,9 +28,9 @@ public class EmailCompositionState(Core.ITimer timer) : LinkedStateBase<EmailCom
         ShuffleMails();
     }
 
-    public void StartCountDown(CancellationToken token)
+    public void StartCountDown()
     {
-        Timer.StartCountdown(TotalTime, token);
+        Timer.Start(TotalTime);
     }
 
     public void AddEmail(Team team, Email email)

@@ -26,7 +26,7 @@
 @code {
     [Parameter]
     public Guid SessionId { get; set; }
-    public Guid UserId { get; set; } = default!;
+    public Guid UserId { get; set; }
 
     public Email Email { get; set; }
     public Session Session { get; set; }
@@ -35,12 +35,13 @@
 
     protected override void OnParametersSet()
     {
+        UserId = UserService.GetUserId();
         Session = SessionManager.GetSession(SessionId);
 
         if (Session?.ContainsPlayer(UserId) != true || 
             Session?.CurrentState is not EmailCompositionState)
         {
-            Navigator.NavigateTo("/NotFound");
+            Navigator.NavigateTo("/notfound");
         }
 
         Email = new() { IsPhishing = true };
@@ -52,7 +53,7 @@
 
         State.AddEmail(team, email);
 
-        Navigator.NavigateTo($"/{SessionId}");
+        Navigator.NavigateTo($"/session/{SessionId}");
     }
 
     private void OnInvalidSubmit()

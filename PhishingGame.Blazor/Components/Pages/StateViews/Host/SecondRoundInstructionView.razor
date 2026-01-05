@@ -1,0 +1,17 @@
+﻿@using PhishingGame.Blazor.States
+@using PhishingGame.Core
+@using Radzen
+@using Radzen.Blazor
+
+@inherits GameViewBase<SecondRoundInstructionState>
+
+<RadzenStack Style="height:100vh"
+             AlignItems="AlignItems.Center"
+             JustifyContent="JustifyContent.Center">
+    <RadzenText TextStyle="TextStyle.DisplayH1">Ronde 2</RadzenText>
+    <RadzenText TextStyle="TextStyle.H3">Markeer de phishing mails van de tegenstander!</RadzenText>
+
+    <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Session.NextStateAsync">Volgende</RadzenButton>
+    </RadzenFooter>
+</RadzenStack>
