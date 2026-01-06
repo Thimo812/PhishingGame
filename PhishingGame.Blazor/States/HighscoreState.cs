@@ -1,21 +1,27 @@
 ﻿using PhishingGame.Blazor.Components.Pages.StateViews.Client;
 using PhishingGame.Blazor.Components.Pages.StateViews.Host;
 using PhishingGame.Core;
-using PhishingGame.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace PhishingGame.Blazor.States;
 
 public class HighscoreState : LinkedStateBase<HighscoreHostView, HighscoreClientView>
 {
     public List<Team> RankedTeams { get; private set; } = new();
 
+    public event Action? Changed;
+
     public override void InitializeState(Session session)
     {
         base.InitializeState(session);
+
+        Session.SessionDataChanged += OnSessionDataChanged;
+
         RecalculateRanking();
+        Changed?.Invoke();
+    }
+
+    private void OnSessionDataChanged()
+    {
+        RecalculateRanking();
+        Changed?.Invoke();
     }
 
     public void RecalculateRanking()

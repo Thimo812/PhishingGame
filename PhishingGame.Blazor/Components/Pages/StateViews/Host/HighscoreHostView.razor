@@ -3,6 +3,8 @@
 @using Radzen
 @using Radzen.Blazor
 @inherits GameViewBase<HighscoreState>
+@implements IDisposable
+
 
 <RadzenCard Style="padding:16px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -37,9 +39,28 @@
 @code {
     [CascadingParameter] public Session Session { get; set; }
 
+    protected override void OnInitialized()
+    {
+        if (State is null) return;
+        State.Changed += OnStateChanged;
+
+          State.RecalculateRanking();
+    }
+
+    private void OnStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (State is null) return;
+        State.Changed -= OnStateChanged;
+    }
+
     private void OnRefresh()
     {
         State?.RecalculateRanking();
-        InvokeAsync(StateHasChanged);
     }
 }
+

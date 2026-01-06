@@ -67,7 +67,6 @@ public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHost
     {
         if (Session?.SessionData?.Mails == null) return;
 
-
         foreach (var kv in FlaggedMails.ToList())
         {
             var team = kv.Key;
@@ -95,9 +94,9 @@ public class FirstRoundState(Core.ITimer timer) : LinkedStateBase<FirstRoundHost
 
             double percent = (double)goodAnswers / total * 100.0;
             team.Score = (int)Math.Round(percent);
-
-
-            Console.WriteLine($"[FirstRoundState] Team='{team.Name}' good={goodAnswers}/{total} score={team.Score}");
         }
+
+        Session?.NotifySessionDataChanged();
     }
+
 }

@@ -21,6 +21,13 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
     public Guid SessionId { get; set; } = Guid.NewGuid();
     public Guid HostId { get; set; } = hostId;
     public bool CanJoin { get; set; } = true;
+    public event Action? SessionDataChanged;
+
+    public void NotifySessionDataChanged()
+    {
+        SessionDataChanged?.Invoke();
+    }
+
 
     public void AddPlayer(Guid id, string name)
     {
