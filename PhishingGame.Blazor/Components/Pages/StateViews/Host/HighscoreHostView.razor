@@ -1,0 +1,67 @@
+﻿@using PhishingGame.Blazor.States
+@using PhishingGame.Core
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+@inherits GameViewBase<HighscoreState>
+@implements IDisposable
+
+
+<RadzenCard Style="padding:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+            <h3>Highscores — Host view</h3>
+        </div>
+        <div>
+            <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Primary" Click="@(args => OnRefresh())">Refresh</RadzenButton>
+        </div>
+    </div>
+
+    @if (State?.RankedTeams == null || !State.RankedTeams.Any())
+    {
+        <p>No teams available.</p>
+    }
+    else
+    {
+        <RadzenDataGrid Data="@State.RankedTeams" TItem="Team" AllowPaging="false" RowHover="true">
+            <Columns>
+                <RadzenDataGridColumn TItem="Team" Title="#" Context="team">
+                    <Template Context="team">
+                        @(State.RankedTeams.IndexOf(team) + 1)
+                    </Template>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="Team" Property="Name" Title="Team" />
+                <RadzenDataGridColumn TItem="Team" Property="Score" Title="Score" />
+            </Columns>
+        </RadzenDataGrid>
+    }
+</RadzenCard>
+
+@code {
+    [CascadingParameter] public Session Session { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (State is null) return;
+        State.Changed += OnStateChanged;
+
+          State.RecalculateRanking();
+    }
+
+    private void OnStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        if (State is null) return;
+        State.Changed -= OnStateChanged;
+    }
+
+    private void OnRefresh()
+    {
+        State?.RecalculateRanking();
+    }
+}
+

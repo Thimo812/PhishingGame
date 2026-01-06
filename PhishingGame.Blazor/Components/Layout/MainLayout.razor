@@ -3,7 +3,7 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu IsHost="@isHost" />
     </div>
 
     <main>
@@ -12,7 +12,9 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <CascadingValue Name="SetHost" Value="@((Action<bool>)SetHost)">
+                @Body
+            </CascadingValue>
         </article>
     </main>
 </div>
@@ -26,3 +28,14 @@
 <RadzenDialog />
 <RadzenNotification />
 <RadzenComponents @rendermode="InteractiveAuto" />
+
+@code {
+    private bool isHost;
+
+    private void SetHost(bool host)
+    {
+        if (isHost == host) return;
+        isHost = host;
+        StateHasChanged();
+    }
+}

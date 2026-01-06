@@ -11,9 +11,11 @@ public static class StateConfigurationExtensions
             .WithState<TeamLayoutState>()
             .WithState<FirstRoundInstructionState>()
             .WithState<FlaggingRoundState>()
+            .WithState<HighscoreState>()
             .WithState<EmailCompositionInstructionState>()
             .WithState<EmailCompositionState>()
             .WithState<SecondRoundInstructionState>()
-            .WithState<FlaggingRoundState>());
+            .WithState<FlaggingRoundState>()
+            .WithState<HighscoreState>());
 }
 

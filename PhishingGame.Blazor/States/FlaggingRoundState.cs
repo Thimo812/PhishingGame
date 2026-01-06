@@ -47,7 +47,7 @@ public class FlaggingRoundState(Core.ITimer timer) : LinkedStateBase<FlaggingRou
         {
             var allMails = Session.SessionData.Mails[team];
             int mistakes = MistakeCount(allMails, flaggedMails);
-
+            int phishingMailCount = allMails.Count(mail => mail.IsPhishing);
             team.Score += 100 - (100 * mistakes / allMails.Count);
         }
     }
