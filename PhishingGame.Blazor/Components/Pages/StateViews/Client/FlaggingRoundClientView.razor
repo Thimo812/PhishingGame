@@ -8,30 +8,32 @@
 @inherits GameViewBase<FlaggingRoundState>
 
 @inject NavigationManager Navigator
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenText TextStyle="TextStyle.H2">Inbox</RadzenText>
+    <RadzenDataGrid TItem="Email"
+                    Data="@Data"
+                    RowSelect="OnRowSelect"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    AllowPaging="true"
+                    AllowSorting="true"
+                    PageSize="8"
+                    Class="rz-hoverable"
+                    Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
 
-<RadzenDataGrid TItem="Email"
-                Data="@Data"
-                RowSelect="OnRowSelect"
-                SelectionMode="DataGridSelectionMode.Single"
-                AllowPaging="true"
-                AllowSorting="true"
-                PageSize="8"
-                Class="rz-hoverable"
-                Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
-
-    <Columns>
-        <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
-        <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
-        <RadzenDataGridColumn TItem="Email" Title="Phishing?" Width="75px">
-            <Template Context="email">
-                <RadzenButton Click="@(() => OnMailFlagged(email))"
-                              @onclick:stopPropagation="true">
-                    <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
-                </RadzenButton>
-            </Template>
-        </RadzenDataGridColumn>
-    </Columns>
-</RadzenDataGrid>
+        <Columns>
+            <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+            <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+            <RadzenDataGridColumn TItem="Email" Title="Phishing?" Width="75px">
+                <Template Context="email">
+                    <RadzenButton Click="@(() => OnMailFlagged(email))"
+                                  @onclick:stopPropagation="true">
+                        <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenStack>
 
 @code {
 
