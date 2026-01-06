@@ -1,0 +1,21 @@
+﻿@using Radzen.Blazor
+@using PhishingGame.Blazor.States;
+@inherits GameViewBase<StartMenuState>
+
+<RadzenStack Style="height:100%"
+             AlignItems="Radzen.AlignItems.Center"
+             JustifyContent="Radzen.JustifyContent.Center">
+    <h1>Welkom @GetUserName()</h1>
+    <p>Wacht nog even totdat de game begint</p>
+</RadzenStack>
+
+@code {
+    string GetUserName()
+    {
+        if (!Session.TryGetPlayer(UserId, out var player))
+        {
+            throw new InvalidDataException("Player is not present");
+        }
+        return player.Name;
+    }
+}

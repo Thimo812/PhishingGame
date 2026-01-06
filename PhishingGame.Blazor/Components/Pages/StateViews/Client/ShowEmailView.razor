@@ -1,0 +1,52 @@
+﻿@using PhishingGame.Core
+@using PhishingGame.Core.Models
+
+@implements IGameView
+
+@inject IUserService UserService
+@inject ISessionManager SessionManager
+@inject NavigationManager Navigator
+
+@page "/session/{SessionId:guid}/mail/{EmailId:guid}"
+
+<EmailForm @bind-value="Email"
+           ReadOnly=true 
+           OnCancel="OnCancel"
+           />
+
+@code {
+    [Parameter]
+    public Guid SessionId { get; set; }
+
+    [Parameter]
+    public Guid EmailId { get; set; }
+
+    public Guid UserId => UserService.GetUserId();
+
+    public Email Email { get; set; }
+    public Team? Team => Session?.SessionData.Teams.FirstOrDefault(team => team.Players.Any(player => player.Id == UserId));
+    public Session? Session => SessionManager.GetSession(SessionId);
+
+    protected override void OnParametersSet()
+    {
+        Email email = null;
+        if (Team == null || !TryGetEmail(out email))
+        {
+            Navigator.NavigateTo("/notfound");
+        }
+
+        Email = email;
+    }
+
+    private bool TryGetEmail(out Email email)
+    {
+        var mails = Session.SessionData.Mails[Team];
+        email = mails.FirstOrDefault(mail => mail.Id == EmailId);
+        return email != null;
+    }
+
+    private void OnCancel()
+    {
+        Navigator.NavigateTo($"/session/{SessionId}");
+    }
+}

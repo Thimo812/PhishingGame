@@ -1,22 +1,32 @@
-﻿@using Radzen.Blazor
-@using Core
+﻿@using Core
 @using Core.Models
+@using Microsoft.EntityFrameworkCore
+@using PhishingGame.Data
+@using Radzen.Blazor
 
+@inject IServiceProvider _serviceProvider
 @inject ISessionManager _sessionManager
+@inject NavigationManager _navigator
+@inject PhishingDbContext _dbContext
+@page "/host"
 @page "/"
 
 
 
-<RadzenButton Click="@OnClick">Start sessie</RadzenButton>
-
-<p>@Session?.SessionId</p>
+@if (Session == null)
+{
+    <RadzenButton Click="@OnClick">Start nieuwe sessie</RadzenButton>
+}
 
 @code {
     public Session? Session { get; set; }
+    public ILinkedState? CurrentState => Session?.CurrentState;
 
-    public async Task OnClick()
+    public void OnClick()
     {
-        Session = _sessionManager.CreateSession(new());
-        await Task.CompletedTask;
+        var training = _dbContext.Trainings.Include(training => training.Emails).First();
+        Session = _sessionManager.CreateSession(training, _serviceProvider);
+        Session.Initialize();
+        _navigator.NavigateTo($"session/{Session.SessionId}", true);
     }
 }

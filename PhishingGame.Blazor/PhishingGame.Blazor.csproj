@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PhishinGame.Core\PhishingGame.Core.csproj" />
+    <ProjectReference Include="..\PhishingGame.Core\PhishingGame.Core.csproj" />
     <ProjectReference Include="..\PhishingGame.Data\PhishingGame.Data.csproj" />
   </ItemGroup>
 

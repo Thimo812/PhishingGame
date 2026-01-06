@@ -1,0 +1,84 @@
+﻿@using System.Linq
+@using PhishingGame.Blazor.States
+@using PhishingGame.Core;
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+
+@inherits GameViewBase<FlaggingRoundState>
+
+@inject NavigationManager Navigator
+<RadzenStack Orientation="Orientation.Vertical">
+    <RadzenText TextStyle="TextStyle.H2">Inbox</RadzenText>
+    <RadzenDataGrid TItem="Email"
+                    Data="@Data"
+                    RowSelect="OnRowSelect"
+                    SelectionMode="DataGridSelectionMode.Single"
+                    AllowPaging="true"
+                    AllowSorting="true"
+                    PageSize="8"
+                    Class="rz-hoverable"
+                    Style="cursor:pointer; width:100%; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+
+        <Columns>
+            <RadzenDataGridColumn TItem="Email" Property="Sender" Title="Afzender" />
+            <RadzenDataGridColumn TItem="Email" Property="Subject" Title="Onderwerp" />
+            <RadzenDataGridColumn TItem="Email" Title="Phishing?" Width="75px">
+                <Template Context="email">
+                    <RadzenButton Click="@(() => OnMailFlagged(email))"
+                                  @onclick:stopPropagation="true">
+                        <RadzenIcon Icon="flag" IconColor="@GetIconColor(email)" />
+                    </RadzenButton>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenStack>
+
+@code {
+
+    public IEnumerable<Email> Data { get; set; } = Enumerable.Empty<Email>();
+
+    public List<Email> Flagged { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Flagged = State.FlaggedMails.TryGetValue(Team, out var flagged) ? flagged : new List<Email>();
+        Data = Session.SessionData.Mails.TryGetValue(Team, out var data) ? data : Enumerable.Empty<Email>();
+
+        State.EmailFlagged -= UpdateFlaggedMails;
+        State.EmailFlagged += UpdateFlaggedMails;
+    }
+
+    private void OnRowSelect(Email email)
+    {
+        Navigator.NavigateTo($"/session/{Session.SessionId}/mail/{email.Id}");
+    }
+
+    private void OnMailFlagged(Email email)
+    {
+        if (Flagged.Contains(email))
+        {
+            Flagged.Remove(email);
+        }
+
+        else Flagged.Add(email);
+
+        State.NotifyEmailFlagged(Team, email);
+    }
+
+    private async void UpdateFlaggedMails(Team team, Email email)
+    {
+        if (team == null || !team.Equals(Team)) return;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetIconColor(Email email)
+        => Flagged.Contains(email) ? "red" : "green";
+
+    public void Dispose()
+    {
+        State.EmailFlagged -= UpdateFlaggedMails;
+    }
+}

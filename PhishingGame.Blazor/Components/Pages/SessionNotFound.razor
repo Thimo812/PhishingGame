@@ -1,1 +1,12 @@
-﻿<h1> Sessie niet gevonden!</h1>
+﻿@using PhishingGame.Core
+@using Radzen
+@using Radzen.Blazor
+
+@page "/notfound"
+@implements IGameView
+
+<RadzenStack Style="height:100%"
+             AlignItems="Radzen.AlignItems.Center"
+             JustifyContent="Radzen.JustifyContent.Center">
+    <RadzenText TextStyle="TextStyle.H1">Sessie niet gevonden</RadzenText>
+</RadzenStack>

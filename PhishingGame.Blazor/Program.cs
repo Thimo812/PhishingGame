@@ -1,32 +1,25 @@
-using Radzen;
-using PhishingGame.Blazor.Components;
-using PhishingGame.Blazor.Components.States;
-using PhishingGame.Core;
 using Microsoft.EntityFrameworkCore;
-using PhishingGame.Core.Models;
+using PhishingGame.Blazor;
+using PhishingGame.Blazor.Components;
+using Radzen;
 using PhishingGame.Data;
+using PhishingGame.Core;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-
-builder.Services.AddDbContext<PhishingDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-
-
 // Add services to the container.
 builder.Services
-    .AddSessions(states => states.WithState<StartState>())
+    .AddGameStates()
+    .AddDbContext<PhishingDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
+    .AddRadzenComponents()
     .AddHttpContextAccessor()
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<NotificationService>();
-
-
 
 var app = builder.Build();
 
@@ -47,15 +40,5 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<PhishingDbContext>();
-    db.Database.Migrate(); 
-
-
-}
-
-
 
 app.Run();

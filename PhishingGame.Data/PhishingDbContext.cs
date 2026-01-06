@@ -4,14 +4,15 @@ using PhishingGame.Core.Models;
 
 namespace PhishingGame.Data;
 
-public class PhishingDbContext : IdentityDbContext
+/// <summary>
+/// Entity Framework database context for storing tables related to the phishing game and authentication thereof.
+/// </summary>
+/// <param name="options">
+/// Configuration options for the database context.
+/// </param>
+public class PhishingDbContext(DbContextOptions<PhishingDbContext> options) : IdentityDbContext(options)
 {
-    public PhishingDbContext(DbContextOptions<PhishingDbContext> options)
-        : base(options)
-    {
-    }
-
-    public DbSet<Email> Emails { get; set; } 
+    public DbSet<Email> Emails { get; set; }
     public DbSet<Training> Trainings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -23,6 +24,4 @@ public class PhishingDbContext : IdentityDbContext
             .WithMany(e => e.Trainings)
             .UsingEntity(j => j.ToTable("TrainingEmails"));
     }
-
-
 }

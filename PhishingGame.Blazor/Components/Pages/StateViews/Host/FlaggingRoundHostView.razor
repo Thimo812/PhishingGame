@@ -1,0 +1,41 @@
+﻿@using PhishingGame.Blazor.States
+@using Radzen.Blazor
+@using Radzen
+
+@inherits GameViewBase<FlaggingRoundState>
+
+<RadzenStack Style="height:100%"
+             AlignItems="AlignItems.Center"
+             JustifyContent="JustifyContent.Center">
+    <RadzenCard Variant="Variant.Filled">
+        <RadzenText TextStyle="TextStyle.DisplayH1">@State.Timer.RemainingTime.ToString()</RadzenText>
+    </RadzenCard>
+
+    <RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
+        <RadzenButton ButtonStyle="ButtonStyle.Secondary" Click="@Continue">Ronde Beëindigen</RadzenButton>
+    </RadzenFooter>
+</RadzenStack>
+
+@code {
+
+    protected override void OnParametersSet()
+    {
+        State.Timer.CountdownUpdated += OnCountdownChanged;
+
+        if (State.Timer.Active) return;
+
+        State.StartCountDown();
+    }
+
+    private async void OnCountdownChanged()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Continue()
+    {
+        State.Timer.Active = false;
+        await Session.NextStateAsync();
+    }
+}
+

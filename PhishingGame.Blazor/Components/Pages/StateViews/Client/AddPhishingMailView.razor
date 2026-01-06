@@ -1,0 +1,83 @@
+﻿@using PhishingGame.Blazor.States
+@using PhishingGame.Core
+@using PhishingGame.Core.Models
+@using Radzen
+@using Radzen.Blazor
+
+@using Radzen
+@using Radzen.Blazor
+
+@implements IGameView
+
+@inject NotificationService NotificationService
+@inject IUserService UserService
+@inject ISessionManager SessionManager
+@inject NavigationManager Navigator
+
+@page "/session/{SessionId:guid}/addmail"
+
+<RadzenText TextStyle="TextStyle.H3">Phishing mail toevoegen</RadzenText>
+
+<EmailForm
+    @bind-value="Email"
+    OnSubmit="@OnSubmit"
+    OnInvalidSubmit="@OnInvalidSubmit"
+    ReadOnly=false
+    OnCancel="OnCancel"
+    />
+
+@code {
+    [Parameter]
+    public Guid SessionId { get; set; }
+    public Guid UserId { get; set; }
+
+    public Email Email { get; set; }
+    public Session Session { get; set; }
+    public EmailCompositionState State => (EmailCompositionState)Session.CurrentState;
+    public Team Team => GetTeam(UserId);
+
+    protected override void OnParametersSet()
+    {
+        UserId = UserService.GetUserId();
+        Session = SessionManager.GetSession(SessionId);
+
+        if (Session?.ContainsPlayer(UserId) != true || 
+            Session?.CurrentState is not EmailCompositionState)
+        {
+            Navigator.NavigateTo("/notfound");
+        }
+
+        Email = new() { IsPhishing = true };
+    }
+
+    private void OnSubmit(Email email)
+    {
+        var team = Session.SessionData.Teams.First(team => team.Players.Any(player => player.Id == UserId));
+
+        State.AddEmail(team, email);
+
+        Navigator.NavigateTo($"/session/{SessionId}");
+    }
+
+    private void OnInvalidSubmit()
+    {
+        NotificationService.Notify(
+            new NotificationMessage
+            {
+                Severity = NotificationSeverity.Error,
+                Summary = "Fout",
+                Detail = "Vul alle verplichte velden in.",
+                Duration = 3000
+            });
+    }
+
+    private Team GetTeam(Guid userId)
+    {
+        return Session.SessionData.Teams.First(team => team.Players.Any(player => player.Id == UserId));
+    }
+
+    private void OnCancel()
+    {
+        Navigator.NavigateTo($"/session/{SessionId}");
+    }
+}

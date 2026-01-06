@@ -1,0 +1,28 @@
+﻿@using PhishingGame.Blazor.Components.Pages
+@using PhishingGame.Core
+
+@page "/session/{SessionId:guid}"
+
+@implements IGameView
+
+@if (CurrentState == null)
+{
+    _navigator.NavigateTo("/notfound");
+}
+
+else if (!ContainsPlayer && !IsHost)
+{
+    if (Session.CanJoin)
+    {
+        <RegisterView OnSubmit="@RegisterPlayer" />
+    }
+    else
+    {
+        <SessionClosed />
+    }
+}
+
+else 
+{
+    <DynamicComponent Type="@ViewType" Parameters="@ViewParameters" @key=Session?.CurrentState />
+}
