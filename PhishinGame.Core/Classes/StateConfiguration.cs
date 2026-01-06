@@ -15,7 +15,7 @@ public class StateConfiguration
     public ILinkedState GetLinkedState(IServiceProvider scopedProvider)
     {
         ILinkedState? first = null;
-        ILinkedState? current = null; 
+        ILinkedState? current = null;
 
         foreach (var type in _stateTypes)
         {

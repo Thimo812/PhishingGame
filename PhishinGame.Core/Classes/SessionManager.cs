@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using PhishingGame.Core.Models;
 
 namespace PhishingGame.Core;
@@ -30,7 +29,7 @@ internal class SessionManager(StateConfiguration states) : ISessionManager
 
     public Session? GetSession(Guid sessionId)
     {
-        return 
+        return
             _activeSessions.TryGetValue(sessionId, out var session) ? session :
             _waitingSessions.TryGetValue(sessionId, out session) ? session :
             null;

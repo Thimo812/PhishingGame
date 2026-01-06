@@ -1,10 +1,9 @@
-using Radzen;
 using Microsoft.EntityFrameworkCore;
+using PhishingGame.Blazor;
 using PhishingGame.Blazor.Components;
 using PhishingGame.Data;
 using PhishingGame.Core;
-using PhishingGame.Blazor.States;
-using PhishingGame.Blazor;
+using Radzen;
 
 
 var builder = WebApplication.CreateBuilder(args);

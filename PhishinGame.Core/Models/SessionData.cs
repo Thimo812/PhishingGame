@@ -1,6 +1,4 @@
-﻿using PhishingGame.Core.Models;
-
-namespace PhishingGame.Core;
+﻿namespace PhishingGame.Core.Models;
 
 public class SessionData
 {

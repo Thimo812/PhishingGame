@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using PhishingGame.Core;
+using PhishingGame.Core.Models;
 
 namespace PhishingGame.Blazor.Components.Pages;
 
@@ -12,7 +13,7 @@ public partial class GameView
     private IUserService _userService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager _navigator {  get; set; } = default!;
+    private NavigationManager _navigator { get; set; } = default!;
 
     [Parameter]
     public Guid SessionId { get; set; }
@@ -24,7 +25,7 @@ public partial class GameView
         get => _session;
         set
         {
-            if (_session != null) 
+            if (_session != null)
                 _session.StateUpdated -= OnStateUpdated;
 
             _session = value;
@@ -33,9 +34,9 @@ public partial class GameView
         }
     }
     public ILinkedState? CurrentState => Session?.CurrentState;
-    public Guid UserId {  get; set; }
-    public Team? Team {  get; set; }
-    public bool IsHost {  get; set; }
+    public Guid UserId { get; set; }
+    public Team? Team { get; set; }
+    public bool IsHost { get; set; }
     public Type? ViewType => IsHost ? CurrentState?.HostViewType : CurrentState?.PlayerViewType;
     public IDictionary<string, object> ViewParameters { get; set; }
     public bool ContainsPlayer => Session?.ContainsPlayer(UserId) ?? false;
@@ -79,7 +80,7 @@ public partial class GameView
         {
             ["UserId"] = UserId,
             ["Team"] = Team
-        }; 
+        };
     }
 
     private Team? GetTeam()

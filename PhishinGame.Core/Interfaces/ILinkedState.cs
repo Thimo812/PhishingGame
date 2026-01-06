@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace PhishingGame.Core;
+﻿namespace PhishingGame.Core;
 
 public interface ILinkedState
 {

@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhishingGame.Core", "Phishi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhishingGame.Data", "PhishingGame.Data\PhishingGame.Data.csproj", "{B137BBD5-BECC-4EC1-95B4-7FFD115AFB83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhishingGame.Tests", "PhishingGame.Tests\PhishingGame.Tests.csproj", "{1482FAEB-B5EF-44E2-A35D-630C93A81F8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B137BBD5-BECC-4EC1-95B4-7FFD115AFB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B137BBD5-BECC-4EC1-95B4-7FFD115AFB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B137BBD5-BECC-4EC1-95B4-7FFD115AFB83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1482FAEB-B5EF-44E2-A35D-630C93A81F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1482FAEB-B5EF-44E2-A35D-630C93A81F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1482FAEB-B5EF-44E2-A35D-630C93A81F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1482FAEB-B5EF-44E2-A35D-630C93A81F8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

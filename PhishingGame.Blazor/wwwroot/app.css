@@ -1,6 +1,6 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: var(--rz-body-background-color);
+    height: 100%;
 }
 
 a, .btn-link {

@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Collections.ObjectModel;
-
-namespace PhishingGame.Core;
+﻿namespace PhishingGame.Core;
 
 public abstract class LinkedStateBase<THostView, TPlayerView> : ILinkedState
     where THostView : IGameView

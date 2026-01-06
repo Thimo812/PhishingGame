@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace PhishingGame.Core.Models;
+﻿namespace PhishingGame.Core.Models;
 
 public class BaseModel
 {
@@ -9,7 +7,7 @@ public class BaseModel
     {
         get
         {
-            if (_id == Guid.Empty) _id = Guid.NewGuid(); 
+            if (_id == Guid.Empty) _id = Guid.NewGuid();
             return _id;
         }
         set => _id = value;

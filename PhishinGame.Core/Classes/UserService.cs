@@ -1,6 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Http;
-using System.Xml.Schema;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace PhishingGame.Core;
 
