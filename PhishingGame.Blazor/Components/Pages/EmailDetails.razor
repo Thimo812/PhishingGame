@@ -2,11 +2,12 @@
 
 @using PhishingGame.Core.Models
 @using Microsoft.EntityFrameworkCore
+@using PhishingGame.Data
 @using Radzen
 @using Radzen.Blazor
 
 
-@inject PhishingGame.Data.PhishingDbContext Db
+@inject PhishingDbContext Db
 @inject NotificationService NotificationService
 @inject NavigationManager NavigationManager
 
@@ -41,7 +42,7 @@ else
         <div style="margin-top:20px;">
             <RadzenButton Text="Terug naar overzicht"
                           Icon="arrow_back"
-                          Click="@ClosePage"
+                          Click="@Back"
                           ButtonStyle="ButtonStyle.Light" />
         </div>
     </div>
@@ -71,5 +72,5 @@ else
         });
     }
 
-    void ClosePage() => NavigationManager.NavigateTo("/emailoverview");
+    void Back() => NavigationManager.NavigateTo("/emailoverview");
 }

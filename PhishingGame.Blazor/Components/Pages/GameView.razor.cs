@@ -42,6 +42,7 @@ public partial class GameView : IDisposable
                 return;
             }
 
+            _session.SessionEnded += OnSessionEnded;
             _session.StateUpdated += OnStateUpdated;
             var currentUser = _userService.GetUserId();
             IsHost = _session.HostId == currentUser;
@@ -69,6 +70,11 @@ public partial class GameView : IDisposable
     {
         UpdateViewParameters();
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void OnSessionEnded(Session session)
+    {
+        _navigator.NavigateTo("/");
     }
 
     protected override async Task OnParametersSetAsync()
@@ -105,6 +111,10 @@ public partial class GameView : IDisposable
     public void Dispose()
     {
         SetHost?.Invoke(false);
-        if (_session != null) _session.StateUpdated -= OnStateUpdated;
+        if (_session != null)
+        {
+            _session.StateUpdated -= OnStateUpdated;
+            _session.SessionEnded -= OnSessionEnded;
+        }
     }
 }

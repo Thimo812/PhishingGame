@@ -28,7 +28,6 @@ public class Session(ILinkedState state, Training training, Guid hostId = defaul
         SessionDataChanged?.Invoke();
     }
 
-
     public void AddPlayer(Guid id, string name)
     {
         SessionData.Players.Add(new Player(id, name));

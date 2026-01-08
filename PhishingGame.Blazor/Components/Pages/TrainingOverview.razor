@@ -1,12 +1,18 @@
-﻿@page "/trainingoverview"
+﻿@page "/"
+@page "/trainingoverview"
 
 @using Microsoft.EntityFrameworkCore
+@using PhishingGame.Core
 @using PhishingGame.Core.Models
+@using PhishingGame.Data
 @using Radzen
 @using Radzen.Blazor
-@inject PhishingGame.Data.PhishingDbContext Db
+
+@inject PhishingDbContext Db
 @inject DialogService DialogService
 @inject NavigationManager NavigationManager
+@inject ISessionManager SessionManager
+@inject IServiceProvider ServiceProvider
 
 <h3 class="text-xl font-bold mb-3">Trainingen beheren</h3>
 
@@ -34,7 +40,6 @@
                 </ul>
             </Template>
         </RadzenDataGridColumn>
-
         <RadzenDataGridColumn TItem="Training" Title="Acties">
             <Template Context="training">
                 <RadzenButton Icon="delete"
@@ -44,7 +49,15 @@
                               Click="@(args => Delete(training))" />
             </Template>
         </RadzenDataGridColumn>
-
+        <RadzenDataGridColumn TItem="Training" Title="Sessie starten">
+            <Template Context="training">
+                <RadzenButton Icon="double_arrow"
+                              ButtonStyle="ButtonStyle.Primary"
+                              Size="ButtonSize.Small"
+                              @onclick:stopPropagation="true"
+                              Click=@(args => StartSession(training)) />
+            </Template>
+        </RadzenDataGridColumn>
     </Columns>
 </RadzenDataGrid>
 
@@ -59,9 +72,9 @@
     }
 
 
-    void OnRowSelect(Training training) => NavigationManager.NavigateTo($"/training/{training.Id}");
+    private void OnRowSelect(Training training) => NavigationManager.NavigateTo($"/training/{training.Id}");
 
-    async Task Delete(Training training)
+    private async Task Delete(Training training)
     {
         var confirm = await DialogService.Confirm("Weet u zeker dat u deze training wilt verwijderen?", "Bevestigen.");
         if (confirm == true)
@@ -72,5 +85,12 @@
         }
     }
 
-    void AddTraining() => NavigationManager.NavigateTo("/addtraining");
+    private void AddTraining() => NavigationManager.NavigateTo("/addtraining");
+
+    private void StartSession(Training training)
+    {
+        var session = SessionManager.CreateSession(training, ServiceProvider);
+        session.Initialize();
+        NavigationManager.NavigateTo($"/session/{session.SessionId}");
+    }
 }

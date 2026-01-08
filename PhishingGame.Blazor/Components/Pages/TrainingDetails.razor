@@ -1,5 +1,6 @@
 ﻿@page "/training/{id:guid}"
 
+@using PhishingGame.Core
 @using PhishingGame.Core.Models
 @using Radzen;
 @using Radzen.Blazor
@@ -9,6 +10,8 @@
 @inject PhishingGame.Data.PhishingDbContext Db
 @inject DialogService DialogService
 @inject NavigationManager NavigationManager
+@inject ISessionManager SessionManager
+@inject IServiceProvider ServiceProvider
 
 @if (training == null)
 {
@@ -162,7 +165,11 @@ else
                           Icon="save"
                           Click="SaveTraining"
                           Style="margin-right:10px;" />
-
+            <RadzenButton Text="Sessie starten"
+                          ButtonStyle="ButtonStyle.Secondary"
+                          Icon="double_arrow"
+                          Click="StartSession"
+                          Style="margin-right:10px;" />
         </div>
     </div>
 }
@@ -236,8 +243,15 @@ else
             Duration = 4000
         });
     }
-    void ClosePage() => NavigationManager.NavigateTo("/trainingoverview");
+    
+    private void ClosePage() => NavigationManager.NavigateTo("/trainingoverview");
 
+    private void StartSession()
+    {
+        var session = SessionManager.CreateSession(Training, ServiceProvider);
+        session.Initialize();
+        NavigationManager.NavigateTo($"/session/{session.SessionId}");
+    }
 }
 
 
