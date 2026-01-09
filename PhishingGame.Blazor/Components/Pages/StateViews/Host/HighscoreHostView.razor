@@ -8,14 +8,21 @@
 
 
 <RadzenCard Style="padding:16px;">
-    <RadzenText TextStyle="TextStyle.H3">Scores</RadzenText>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div>
+            <h3>Highscores — Host view</h3>
+        </div>
+        <div>
+            <RadzenButton Icon="refresh" ButtonStyle="ButtonStyle.Primary" Click="@(args => OnRefresh())">Refresh</RadzenButton>
+        </div>
+    </div>
 
     @if (State?.RankedTeams == null || !State.RankedTeams.Any())
     {
         <p>No teams available.</p>
     }
     else
-    {
+    { 
         <RadzenDataGrid Data="@State.RankedTeams" TItem="Team" AllowPaging="false" RowHover="true">
             <Columns>
                 <RadzenDataGridColumn TItem="Team" Title="#" Context="team">
@@ -29,28 +36,16 @@
         </RadzenDataGrid>
     }
 </RadzenCard>
-<RadzenFooter Style="display: flex; justify-content: flex-end; gap: 1rem">
-    <RadzenButton ButtonStyle="ButtonStyle.Secondary" Text=@(LastState ? "Eindig spel" : "Volgende") Click=@OnButtonClicked />
-</RadzenFooter>
 
 @code {
-    public bool LastState => State.NextState == null;
+    [CascadingParameter] public Session Session { get; set; }
 
     protected override void OnInitialized()
     {
         if (State is null) return;
         State.Changed += OnStateChanged;
 
-        State.RecalculateRanking();
-    }
-
-    private async Task OnButtonClicked()
-    {
-        if (LastState)
-        {
-            Session.Stop();
-        }
-        else await Session.NextStateAsync();
+          State.RecalculateRanking();
     }
 
     private void OnStateChanged()
