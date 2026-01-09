@@ -6,6 +6,9 @@
 Below is a guide for setting up the phishing game server.
 ## 1. Cloning the repository
 The repository can be cloned from this github page.
+## 2. Choosing a database engine
+Currently, the application supports SqlServer and MySql. To specify which version is going to be used, enter the value in the _DatabaseEngine_ field in the _appSettings.json_ file.
+For SqlServer, enter ```SqlServer```, for MySql, enter ```MySql```
 ## 2. Entering the connection string
 To connect to the target database, a connection string must be entered. this can be done in the _appsettings.json_ file, located in the following directory:
   ```PhishingGame\PhishingGame.Blazor\appsettings.json```  
