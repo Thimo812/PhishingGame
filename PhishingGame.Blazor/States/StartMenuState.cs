@@ -11,7 +11,7 @@ public class StartMenuState(NavigationManager navigator) : LinkedStateBase<Start
 
     public string BuildUrl()
     {
-        return $"{_navigator.BaseUri}/sessie/{Session.SessionId}";
+        return $"{_navigator.BaseUri}session/{Session.SessionId}";
     }
 
     public void StopSession()
