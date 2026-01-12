@@ -13,12 +13,8 @@
 
     <RadzenSidebar Expanded="@sidebar1Expanded" Style="width:250px;" Breakpoint="Breakpoint.Lg">
         <RadzenPanelMenu>
-            <RadzenPanelMenuItem Text="Home" Icon="home" Path="/" />
-            @if (IsHost != false)
-            {
-                <RadzenPanelMenuItem Text="Email" Icon="email" Path="/emailoverview" />
-                <RadzenPanelMenuItem Text="Training" Icon="school" Path="/trainingoverview" />
-            }
+            <RadzenPanelMenuItem Text="Email" Icon="email" Path="/emailoverview" />
+            <RadzenPanelMenuItem Text="Training" Icon="school" Path="/trainingoverview" />
         </RadzenPanelMenu>
     </RadzenSidebar>
 
@@ -26,6 +22,4 @@
 
 @code {
     private bool sidebar1Expanded = true;
-
-    [Parameter] public bool? IsHost { get; set; }
 }

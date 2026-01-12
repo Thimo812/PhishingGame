@@ -5,15 +5,11 @@ using Radzen;
 using PhishingGame.Data;
 using PhishingGame.Core;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services
     .AddGameStates()
-    .AddDbContext<PhishingDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")))
+    .AddDbContext<PhishingDbContext>(ConfigureOptions)
     .AddRadzenComponents()
     .AddHttpContextAccessor()
     .AddRazorComponents()
@@ -40,3 +36,18 @@ app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
 app.Run();
+
+void ConfigureOptions(DbContextOptionsBuilder options)
+{
+    var providerString = builder.Configuration["DatabaseEngine"];
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    switch (providerString) 
+    {
+        case "MySql":
+            options.UseMySQL(connectionString);
+            break;
+        case "SqlServer":
+            options.UseSqlServer(connectionString);
+            break;
+    }
+}

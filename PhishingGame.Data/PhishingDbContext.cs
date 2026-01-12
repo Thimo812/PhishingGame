@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PhishingGame.Core.Models;
 
 namespace PhishingGame.Data;
@@ -23,5 +24,20 @@ public class PhishingDbContext(DbContextOptions<PhishingDbContext> options) : Id
             .HasMany(t => t.Emails)
             .WithMany(e => e.Trainings)
             .UsingEntity(j => j.ToTable("TrainingEmails"));
+    }
+
+    public static void ConfigureOptions(DbContextOptionsBuilder options, IConfiguration config)
+    {
+        var providerString = config["DatabaseEngine"];
+        var connectionString = config.GetConnectionString("DefaultConnection");
+        switch (providerString)
+        {
+            case "MySql":
+                options.UseMySQL(connectionString);
+                break;
+            case "SqlServer":
+                options.UseSqlServer(connectionString);
+                break;
+        }
     }
 }

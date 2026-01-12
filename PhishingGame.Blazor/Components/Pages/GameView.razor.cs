@@ -2,10 +2,6 @@
 using PhishingGame.Core;
 using PhishingGame.Core.Models;
 
-using Microsoft.AspNetCore.Components;
-using PhishingGame.Core;
-using System;
-
 namespace PhishingGame.Blazor.Components.Pages;
 
 public partial class GameView : IDisposable
@@ -18,9 +14,6 @@ public partial class GameView : IDisposable
 
     [Inject]
     private NavigationManager _navigator { get; set; } = default!;
-
-    [CascadingParameter(Name = "SetHost")] 
-    public Action<bool>? SetHost { get; set; }
 
     [Parameter]
     public Guid SessionId { get; set; }
@@ -36,17 +29,12 @@ public partial class GameView : IDisposable
                 _session.StateUpdated -= OnStateUpdated;
 
             _session = value;
-            if (_session == null)
-            {
-                SetHost?.Invoke(false);
-                return;
-            }
+            if (_session == null) return;
 
             _session.SessionEnded += OnSessionEnded;
             _session.StateUpdated += OnStateUpdated;
             var currentUser = _userService.GetUserId();
             IsHost = _session.HostId == currentUser;
-            SetHost?.Invoke(IsHost);
         }
     }
     public ILinkedState? CurrentState => Session?.CurrentState;
@@ -90,7 +78,6 @@ public partial class GameView : IDisposable
         UserId = _userService.GetUserId();
         Team = GetTeam();
         IsHost = Session?.HostId == UserId;
-        SetHost?.Invoke(IsHost);
         UpdateViewParameters();
     }
 
@@ -110,7 +97,6 @@ public partial class GameView : IDisposable
 
     public void Dispose()
     {
-        SetHost?.Invoke(false);
         if (_session != null)
         {
             _session.StateUpdated -= OnStateUpdated;
