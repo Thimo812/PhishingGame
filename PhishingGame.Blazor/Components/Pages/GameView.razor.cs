@@ -62,7 +62,7 @@ public partial class GameView : IDisposable
 
     private void OnSessionEnded(Session session)
     {
-        _navigator.NavigateTo("/");
+        _navigator.NavigateTo($"/training/{session.SessionData.Training.Id}");
     }
 
     protected override async Task OnParametersSetAsync()
